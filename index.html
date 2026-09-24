@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Küçük Çiftçiler · Marul Serası Keşif Kiti</title>
+<meta name="description" content="Erzurum Bilim Merkezi · Marul serası keşif kiti: kartındaki QR kodu okut, dokun, keşfet, öğren!">
+<meta name="theme-color" content="#BDE9FF">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Küçük Çiftçiler">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{
   box-sizing:border-box;
@@ -131,6 +141,28 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 .qr-all[aria-busy="true"]{opacity:.6;cursor:progress;}
 .qr-status{flex-basis:100%;min-height:1.3em;}
 .qr-status.err{color:#C0392B;}
+
+/* Uygulamayı yükle (PWA) */
+.btn-install{display:inline-flex;align-items:center;gap:8px;margin-top:14px;height:50px;padding:0 22px;
+  border:none;border-radius:999px;background:var(--card);color:var(--green-dark);font-family:inherit;
+  font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 6px 0 #CFE6D3,var(--shadow);transition:transform .12s;}
+.btn-install:active{transform:translateY(3px);box-shadow:0 3px 0 #CFE6D3,var(--shadow);}
+.btn-install img{width:30px;height:30px;border-radius:8px;}
+.btn-install[hidden]{display:none;}
+.install-dlg{border:none;border-radius:28px;padding:22px 22px 18px;width:calc(100% - 32px);max-width:420px;
+  margin:auto;color:var(--text);background:var(--card);box-shadow:var(--shadow);font-family:inherit;}
+.install-dlg::backdrop{background:rgba(43,58,46,.5);}
+.install-dlg[open]{animation:pop .35s cubic-bezier(.2,1.4,.4,1);}
+.install-dlg:not([open]){display:none;}
+.install-dlg.fallback[open]{display:block;position:fixed;inset:0;z-index:60;height:max-content;}
+.install-dlg h2{display:flex;align-items:center;gap:10px;font-size:1.35rem;color:var(--green-dark);margin-bottom:12px;}
+.install-dlg h2 img{width:44px;height:44px;border-radius:12px;}
+.install-dlg ol{padding-left:1.4em;display:grid;gap:10px;font-size:1.05rem;line-height:1.45;font-weight:500;}
+.install-dlg .note{margin-top:12px;font-size:.92rem;color:var(--text-soft);}
+.install-dlg .ico{display:inline-grid;place-items:center;vertical-align:-6px;width:28px;height:28px;
+  border-radius:8px;background:#EAF4FF;color:#0A7AFF;}
+.install-dlg .ico svg{width:18px;height:18px;}
+.install-dlg .btn-next{width:100%;margin-top:16px;height:56px;}
 
 /* Ortak SVG animasyonları */
 .pulse{animation:pulse 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
@@ -271,6 +303,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <span class="mascot">🥬</span>
     <div class="big">Küçük Çiftçiler</div>
     <div class="sub">Marul Serası Keşif Kiti · Kartındaki QR kodu okut, öğrenmeye başla!</div>
+    <button class="btn-install" id="installBtn" type="button" hidden><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</button>
   </div>
   <div class="menu">
     <div class="mitem" data-q="1"><button class="mcard" onclick="go('soru1')"><span class="ic">🌱</span><span class="tt">Tohum nedir?</span><span class="no">1</span></button></div>
@@ -576,6 +609,33 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 
 <div class="cheer" id="cheer">🎉 Aferin!</div>
 
+<!-- Kurulum rehberi (tarayıcı kendi yükleme penceresini açamadığında) -->
+<dialog class="install-dlg" id="installDlg" aria-labelledby="installTitle">
+  <h2 id="installTitle"><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</h2>
+  <div data-os="ios">
+    <ol>
+      <li>Ekranın altındaki <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg></span> <b>Paylaş</b> düğmesine dokun.</li>
+      <li>Listeyi kaydırıp <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span> <b>Ana Ekrana Ekle</b>'yi seç.</li>
+      <li>Sağ üstteki <b>Ekle</b>'ye dokun. Uygulama ana ekranında! 🎉</li>
+    </ol>
+  </div>
+  <div data-os="ios-other">
+    <ol>
+      <li>Adres çubuğundaki <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5v10h14V11h-1"/></svg></span> <b>Paylaş</b> düğmesine dokun.</li>
+      <li><b>Ana Ekrana Ekle</b>'yi seç ve <b>Ekle</b>'ye dokun.</li>
+    </ol>
+    <p class="note">Bu seçeneği göremiyorsan sayfayı <b>Safari</b> ile aç ve tekrar dene.</p>
+  </div>
+  <div data-os="generic">
+    <ol>
+      <li>Tarayıcının <b>⋮</b> menüsünü aç.</li>
+      <li><b>Uygulamayı yükle</b> ya da <b>Ana ekrana ekle</b>'yi seç.</li>
+    </ol>
+    <p class="note">Seçenek yoksa sayfayı Android'de <b>Chrome</b>, iPhone/iPad'de <b>Safari</b> ile aç.</p>
+  </div>
+  <button class="btn-next" id="installClose" type="button">Tamam 👍</button>
+</dialog>
+
 <script>
 /* ---------- Yönlendirme (hash routing) ---------- */
 const PAGES=['home','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
@@ -835,6 +895,58 @@ function initQrMode(){
   }));
 }
 
+/* ---------- Uygulamayı yükle (PWA) ---------- */
+/* Android/Chrome/Edge: tarayıcının kendi yükleme penceresi. iOS: Apple buna izin vermez → adım adım rehber. */
+let installEvt=null;
+function isInstalled(){
+  return window.matchMedia('(display-mode: standalone)').matches||
+    window.matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;
+}
+function installPlatform(){
+  const ua=navigator.userAgent;
+  const ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(!ios)return 'generic';
+  const inApp=/FBAN|FBAV|Instagram|Line\/|Twitter|TikTok|Snapchat|GSA\//.test(ua);
+  const safari=/Safari\//.test(ua)&&!/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
+  return safari&&!inApp?'ios':'ios-other';
+}
+function openInstallGuide(){
+  const dlg=document.getElementById('installDlg'),os=installPlatform();
+  dlg.querySelectorAll('[data-os]').forEach(el=>{el.hidden=el.dataset.os!==os;});
+  if(typeof dlg.showModal==='function')dlg.showModal();
+  else{dlg.classList.add('fallback');dlg.setAttribute('open','');} /* eski iOS: <dialog> desteği yok */
+}
+function closeInstallGuide(){
+  const dlg=document.getElementById('installDlg');
+  if(typeof dlg.close==='function'&&dlg.open)dlg.close();else dlg.removeAttribute('open');
+}
+function initInstall(){
+  const btn=document.getElementById('installBtn'),dlg=document.getElementById('installDlg');
+  btn.hidden=isInstalled();
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;btn.hidden=isInstalled();});
+  window.addEventListener('appinstalled',()=>{installEvt=null;btn.hidden=true;closeInstallGuide();celebrate('📲 Uygulama yüklendi!');});
+  btn.addEventListener('click',async()=>{
+    if(!installEvt){openInstallGuide();return;}
+    const evt=installEvt;installEvt=null; /* bu olay yalnızca bir kez kullanılabilir */
+    try{
+      await evt.prompt();
+      const choice=await evt.userChoice;
+      if(choice&&choice.outcome==='accepted')btn.hidden=true;
+    }catch(e){openInstallGuide();}
+  });
+  document.getElementById('installClose').addEventListener('click',closeInstallGuide);
+  dlg.addEventListener('click',e=>{ /* sadece pencerenin dışına dokununca kapan (iç boşluk da target===dlg olur) */
+    if(e.target!==dlg)return;
+    const r=dlg.getBoundingClientRect();
+    if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeInstallGuide();
+  });
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('sw.js').catch(e=>console.warn('Çevrimdışı mod kurulamadı:',e));
+    });
+  }
+}
+
 /* ---------- BAŞLAT (her şey tanımlandıktan sonra, en sonda!) ---------- */
 if(!('speechSynthesis' in window)){
   document.querySelectorAll('.btn-speak').forEach(b=>{
@@ -842,6 +954,7 @@ if(!('speechSynthesis' in window)){
   });
 }
 initQrMode();
+initInstall();
 route();
 </script>
 </body>
