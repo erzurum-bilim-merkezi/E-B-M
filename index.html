@@ -96,6 +96,8 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   font-family:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;
   box-shadow:0 8px 0 var(--green-dark),var(--shadow);transition:transform .12s;}
 .btn-next:active{transform:translateY(5px);box-shadow:0 2px 0 var(--green-dark);}
+/* QR ile doğrudan gelindiyse sadece o kartın sorusu: sıradaki soru / ana sayfa geçişi yok */
+.direct-entry .nextwrap.seq,.direct-entry .btn-home{display:none;}
 
 /* Ana sayfa */
 .hero{text-align:center;padding:10px 0 6px;}
@@ -360,7 +362,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint" id="seedHint">👆 Tohuma dokun, ne olacağını gör!</p>
   <div class="answer">🌱 Tohum, <strong>yeni bir bitkinin başlangıcıdır</strong>. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru2')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru2')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 2: MARUL NASIL YETİŞİR -->
@@ -417,7 +419,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint">👆 Yuvarlağı sağa kaydır, marulu büyüt!</p>
   <div class="answer">Marul önce <strong>tohum</strong> olarak başlar. Su aldığında <strong>çimlenir</strong>. Sonra kök, gövde ve yapraklar gelişir; küçük bitkiye <strong>fide</strong> denir. Fide büyüdükçe <strong>marul</strong> olur! 🥬</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru3')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru3')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 3: SERA -->
@@ -468,7 +470,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <div class="bubble" id="seraBubble">👆 Butonlara dokun, seranın sırlarını keşfet!</div>
   <div class="answer">🏡 Sera, bitkilerin yetiştirilmesi için uygun koşulların <strong>daha kontrollü</strong> sağlandığı özel bir yetiştirme alanıdır. Serada bitkilerin ışık, su, sıcaklık ve hava ihtiyaçları takip edilir.</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru4')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru4')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 4: IŞIK / BİTKİNİN MUTFAĞI -->
@@ -506,7 +508,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <button class="btn-big" id="lightBtn">☀️ Işığı Aç!</button>
   </div>
   <div class="answer">☀️ Bitkiler ışığı kullanarak <strong>kendi besinlerini üretir</strong>. Bitkilerin mutfağı <strong>yapraklarıdır</strong> — yapraklar ışığı kullanarak besin hazırlar! Bu yüzden ışık, büyümeleri için çok önemlidir.</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru5')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru5')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 5: SU -->
@@ -543,7 +545,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint">💧 Damlaları izle: kökten yapraklara yolculuk!</p>
   <div class="answer">💧 Su, bitkinin <strong>yaşaması ve büyümesi</strong> için gereklidir. Bitki suyu <strong>kökleriyle</strong> alır ve gövdesinden yapraklarına kadar <strong>her bölümüne taşır</strong>.</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru6')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru6')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 6: ÇİMLENME OYUNU -->
@@ -574,7 +576,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <div class="gamemsg" id="gameMsg">👆 Tohumun ihtiyaçlarına dokun!</div>
   </div>
   <div class="answer">🌱 Tohumun çimlenmesi için <strong>su</strong> ve <strong>uygun sıcaklık</strong> gerekir. Çimlendikten sonra sağlıklı büyümek içinse <strong>ışık, su, hava</strong> ve uygun yetiştirme koşulları önemlidir.</div>
-  <div class="nextwrap"><button class="btn-next" onclick="go('soru7')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru7')">Sıradaki Soru ➜</button></div>
 </section>
 
 <!-- SORU 7: TOHUM vs FİDE -->
@@ -601,7 +603,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <div class="bubble" id="duoBubble">👆 Kartlara dokun, farkı keşfet!</div>
   </div>
   <div class="answer">🌱 <strong>Tohum:</strong> Bitkinin başlangıç aşamasıdır.<br>🌿 <strong>Fide:</strong> Tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.</div>
-  <div class="nextwrap">
+  <div class="nextwrap seq">
     <button class="btn-next" style="background:var(--purple);box-shadow:0 8px 0 #7E4FB4,var(--shadow)" onclick="go('home')">🏠 Ana Sayfa</button>
     <button class="btn-next" onclick="celebrate('Hepsini öğrendin! 🥇')">🎉 Bitirdim!</button>
   </div>
@@ -639,16 +641,19 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 <script>
 /* ---------- Yönlendirme (hash routing) ---------- */
 const PAGES=['home','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
+/* QR/derin link ile doğrudan bir soruya gelindi mi? Uygulama içinde gezinince (go) normal akış açılır. */
+let navigatedInApp=false;
 function route(){
   let h=(location.hash||'#home').replace('#','');
   if(!PAGES.includes(h))h='home';
+  document.body.classList.toggle('direct-entry',!navigatedInApp&&h!=='home');
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   const el=document.getElementById('page-'+h);
   if(el)el.classList.add('active');
   window.scrollTo(0,0);
   stopSpeak();
 }
-function go(id){location.hash='#'+id;}
+function go(id){navigatedInApp=true;location.hash='#'+id;}
 window.addEventListener('hashchange',route);
 
 /* ---------- Sesli okuma ---------- */
