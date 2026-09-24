@@ -54,7 +54,7 @@ body{
 
 /* Sayfa yapısı */
 .page{display:none;position:relative;z-index:1;min-height:100vh;min-height:100dvh;
-  padding:16px 18px calc(28px + env(safe-area-inset-bottom,0px));
+  padding:16px 18px calc(108px + env(safe-area-inset-bottom,0px)); /* altta QR butonu son butonu örtmesin */
   max-width:760px;margin:0 auto;flex-direction:column;}
 .page.active{display:flex;animation:pop .45s cubic-bezier(.2,1.4,.4,1);}
 @keyframes pop{from{opacity:0;transform:scale(.96) translateY(14px)}to{opacity:1;transform:none}}
@@ -96,8 +96,158 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   font-family:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;
   box-shadow:0 8px 0 var(--green-dark),var(--shadow);transition:transform .12s;}
 .btn-next:active{transform:translateY(5px);box-shadow:0 2px 0 var(--green-dark);}
-/* QR ile doğrudan gelindiyse sadece o kartın sorusu: sıradaki soru / ana sayfa geçişi yok */
-.direct-entry .nextwrap.seq,.direct-entry .btn-home{display:none;}
+
+/* Uygulama çubuğu: solda keşif sayfasına dönüş, sağ üstte kaşif */
+.appbar{display:flex;align-items:center;gap:10px;min-height:56px;margin-bottom:8px;}
+.btn-home[hidden],.me[hidden]{display:none;}
+body[data-page="kasif"] .appbar,.qr-mode[data-page="kesif"] .appbar{display:none;}
+.me{display:flex;align-items:center;gap:10px;height:56px;padding:0 6px 0 18px;border:none;border-radius:999px;
+  background:var(--card);box-shadow:var(--shadow);font-family:inherit;font-weight:700;font-size:1.1rem;
+  color:var(--text);cursor:pointer;max-width:min(64vw,320px);transition:transform .12s;}
+.me:active{transform:scale(.95);}
+.me:focus-visible{outline:3px solid var(--green-dark);outline-offset:2px;}
+.me-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.me-av{flex-shrink:0;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;
+  font-size:1.75rem;line-height:1;background:#FFE3EE;}
+.me-av.erkek{background:#DDF0FF;}
+
+/* Keşif sayfası: kilitli / açık kartlar (.menu öneki: aşağıdaki kart renklerini ezsin) */
+.menu .mitem.locked .mcard{background:linear-gradient(150deg,#E4EAE5,#BCC8BF);color:#3E4B42;}
+.menu .mitem.locked .mcard .ic{filter:grayscale(1) opacity(.65);}
+.menu .mitem.locked .mcard .no{background:rgba(255,255,255,.6);}
+.lock{position:absolute;top:-8px;left:-6px;z-index:1;width:42px;height:42px;border-radius:50%;background:#fff;
+  display:grid;place-items:center;font-size:1.25rem;box-shadow:0 4px 10px rgba(43,58,46,.22);pointer-events:none;}
+.mitem:not(.locked) .lock{display:none;}
+.mitem.just-open .mcard{animation:unlock .9s cubic-bezier(.2,1.4,.4,1);}
+@keyframes unlock{0%{transform:scale(.8) rotate(-4deg)}60%{transform:scale(1.06) rotate(2deg)}100%{transform:none}}
+.mcard:focus-visible{outline:4px solid var(--green-dark);outline-offset:3px;}
+.kesif-prog{display:inline-flex;align-items:center;gap:10px;margin-top:12px;padding:8px 16px;border-radius:999px;
+  background:var(--card);box-shadow:var(--shadow);font-weight:700;color:var(--green-dark);}
+.kesif-prog[hidden]{display:none;}
+.kesif-prog .bar{width:90px;height:12px;border-radius:999px;background:#E1EFE3;overflow:hidden;}
+.kesif-prog .bar span{display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--leaf),var(--green));transition:width .5s;}
+
+/* Kaşif giriş formu */
+.kasif-form{display:grid;gap:16px;margin-top:14px;}
+.field{border:none;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px 18px;min-width:0;}
+.flabel{display:block;float:left;width:100%;font-weight:700;font-size:1.15rem;color:var(--green-dark);margin-bottom:12px;padding:0;}
+.flabel+*{clear:both;}
+.finput{width:100%;height:60px;border:3px solid #CFE6D3;border-radius:18px;padding:0 18px;font-family:inherit;
+  font-size:1.35rem;font-weight:700;color:var(--text);background:#F7FCF6;outline:none;}
+.finput:focus{border-color:var(--green);}
+.finput[aria-invalid="true"]{border-color:var(--red);}
+.ferr{margin-top:10px;color:#C0392B;font-weight:700;font-size:1rem;}
+.ferr[hidden]{display:none;}
+.gender{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.gopt{position:relative;display:block;cursor:pointer;}
+.gopt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
+.gbox{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 12px;border-radius:24px;
+  border:4px solid transparent;font-weight:700;font-size:1.2rem;transition:transform .15s,border-color .2s;}
+.gopt.kiz .gbox{background:#FFE3EE;color:#A1305A;}
+.gopt.erkek .gbox{background:#DDF0FF;color:#1D6A99;}
+.gface{font-size:3.4rem;line-height:1.1;}
+.gopt:active .gbox{transform:scale(.95);}
+.gopt.kiz input:checked+.gbox{border-color:var(--pink);box-shadow:0 6px 16px rgba(242,125,166,.4);}
+.gopt.erkek input:checked+.gbox{border-color:var(--blue);box-shadow:0 6px 16px rgba(79,182,232,.4);}
+.gopt input:checked+.gbox .gface{animation:sway 1s ease-in-out 1;}
+.gopt input:focus-visible+.gbox{outline:3px solid var(--green-dark);outline-offset:3px;}
+.gender[aria-invalid="true"] .gbox{border-color:rgba(240,96,95,.55);}
+.spin{display:flex;align-items:center;justify-content:center;gap:16px;}
+.spin-btn{width:64px;height:64px;flex-shrink:0;border:none;border-radius:50%;background:var(--green);color:#fff;
+  font-family:inherit;font-size:2.2rem;font-weight:700;line-height:1;cursor:pointer;
+  box-shadow:0 6px 0 var(--green-dark);transition:transform .12s;touch-action:manipulation;}
+.spin-btn:active{transform:translateY(3px);box-shadow:0 3px 0 var(--green-dark);}
+.spin-btn:disabled{background:#C9D6CD;box-shadow:0 6px 0 #AEBDB3;cursor:default;}
+.spin-btn:focus-visible{outline:3px solid var(--green-dark);outline-offset:3px;}
+.spin-num{display:flex;align-items:baseline;gap:6px;}
+.spin-val{width:92px;height:72px;border:3px solid #CFE6D3;border-radius:20px;background:#F7FCF6;text-align:center;
+  font-family:inherit;font-size:2.4rem;font-weight:700;color:var(--text);outline:none;-moz-appearance:textfield;appearance:textfield;}
+.spin-val:focus{border-color:var(--green);}
+.spin-val::-webkit-inner-spin-button,.spin-val::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+.spin-unit{font-weight:700;font-size:1.2rem;color:var(--text-soft);}
+.pending-note{background:#FFF6D6;border:3px dashed var(--yellow);border-radius:20px;padding:12px 16px;
+  font-weight:700;font-size:1.05rem;text-align:center;}
+.pending-note[hidden]{display:none;}
+
+/* Kaşif profil penceresi */
+.me-card{text-align:center;}
+.me-big{display:inline-grid;place-items:center;width:96px;height:96px;border-radius:50%;font-size:3.6rem;
+  line-height:1;background:#FFE3EE;}
+.me-big.erkek{background:#DDF0FF;}
+.dlg .me-card h2{display:block;margin:10px 0 2px;font-size:1.6rem;overflow-wrap:anywhere;}
+.me-sub{color:var(--text-soft);font-weight:600;}
+.me-prog{display:inline-block;margin-top:12px;padding:8px 16px;border-radius:999px;background:#EAF7EC;
+  color:var(--green-dark);font-weight:700;}
+.btn-hold{--hold:1.5s;position:relative;overflow:hidden;width:100%;height:60px;margin-top:18px;border:none;border-radius:20px;
+  background:var(--red);color:#fff;font-family:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;
+  box-shadow:0 8px 0 #B8403F,var(--shadow);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;}
+.btn-hold .fill{position:absolute;inset:0;background:rgba(255,255,255,.38);transform:scaleX(0);transform-origin:left center;}
+.btn-hold.holding .fill{transform:scaleX(1);transition:transform var(--hold) linear!important;} /* ilerleme göstergesi: azaltılmış harekette de kalsın */
+.btn-hold .lbl{position:relative;}
+.btn-hold.nudge{animation:wig .5s ease-in-out;}
+.btn-hold:focus-visible{outline:3px solid var(--green-dark);outline-offset:3px;}
+.hold-note.warn{color:#C0392B;font-weight:700;}
+
+/* Sağ alt QR okutma butonu */
+.fab-qr{position:fixed;right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));
+  z-index:40;width:70px;height:70px;border:none;border-radius:24px;background:var(--green);color:#fff;cursor:pointer;
+  display:grid;place-items:center;box-shadow:0 6px 0 var(--green-dark),0 14px 26px rgba(43,58,46,.3);transition:transform .12s;}
+.fab-qr svg{width:38px;height:38px;display:block;}
+.fab-qr:active{transform:translateY(3px);box-shadow:0 3px 0 var(--green-dark),0 10px 20px rgba(43,58,46,.3);}
+.fab-qr:focus-visible{outline:3px solid var(--green-dark);outline-offset:3px;}
+body[data-page="kasif"] .fab-qr{display:none;}
+
+/* Kısa bilgi mesajı */
+.toast{position:fixed;left:50%;bottom:calc(104px + env(safe-area-inset-bottom,0px));z-index:45;width:max-content;
+  max-width:calc(100vw - 32px);padding:14px 20px;border-radius:20px;background:#2B3A2E;color:#fff;font-weight:700;
+  font-size:1.05rem;text-align:center;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transform:translate(-50%,16px);transition:opacity .25s,transform .25s;}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* QR okuyucu (tam ekran kamera) */
+.scan-dlg{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:none;
+  background:#0E1A12;color:#fff;overflow:hidden;font-family:inherit;}
+.scan-dlg:not([open]){display:none;}
+.scan-dlg::backdrop{background:#0E1A12;}
+.scan-dlg.fallback[open]{display:block;z-index:70;}
+.scan-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0E1A12;}
+.scan-mask{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;}
+.scan-frame{position:relative;width:min(72vw,52vh,340px);height:min(72vw,52vh,340px);border-radius:28px;
+  box-shadow:0 0 0 200vmax rgba(8,18,10,.55);}
+.scan-frame i{position:absolute;width:52px;height:52px;border:7px solid var(--yellow);}
+.scan-frame i:nth-child(1){top:-5px;left:-5px;border-right:0;border-bottom:0;border-top-left-radius:30px;}
+.scan-frame i:nth-child(2){top:-5px;right:-5px;border-left:0;border-bottom:0;border-top-right-radius:30px;}
+.scan-frame i:nth-child(3){bottom:-5px;left:-5px;border-right:0;border-top:0;border-bottom-left-radius:30px;}
+.scan-frame i:nth-child(4){bottom:-5px;right:-5px;border-left:0;border-top:0;border-bottom-right-radius:30px;}
+.scan-line{position:absolute;left:10%;right:10%;top:10%;height:4px;border-radius:4px;background:var(--yellow);
+  box-shadow:0 0 14px var(--yellow);animation:scanline 2.2s ease-in-out infinite alternate;}
+@keyframes scanline{to{top:88%}}
+.scan-top{position:absolute;top:0;left:0;right:0;padding:calc(18px + env(safe-area-inset-top,0px)) 18px 0;text-align:center;}
+.scan-top h2{font-size:clamp(1.2rem,5vw,1.6rem);text-shadow:0 2px 8px rgba(0,0,0,.6);}
+.scan-target{display:inline-block;margin-top:10px;padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.94);
+  color:var(--text);font-weight:700;max-width:100%;}
+.scan-target[hidden]{display:none;}
+.scan-msg{position:absolute;left:16px;right:16px;bottom:calc(108px + env(safe-area-inset-bottom,0px));text-align:center;}
+.scan-msg span{display:inline-block;padding:10px 16px;border-radius:18px;background:rgba(255,255,255,.94);color:var(--text);
+  font-weight:700;font-size:1.05rem;}
+.scan-msg span.warn{background:#FFF1C2;color:#6B4A00;}
+.scan-msg:empty{display:none;}
+.scan-err{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  padding:24px 24px calc(110px + env(safe-area-inset-bottom,0px));text-align:center;background:#0E1A12;}
+.scan-err[hidden]{display:none;}
+.scan-err .ic{font-size:4rem;line-height:1;}
+.scan-err h3{font-size:1.35rem;}
+.scan-err p{font-size:1.08rem;font-weight:500;line-height:1.5;max-width:440px;color:#DDEBE0;}
+.scan-bottom{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;flex-wrap:wrap;gap:12px;
+  padding:0 16px calc(20px + env(safe-area-inset-bottom,0px));}
+.scan-btn{height:56px;padding:0 20px;border:none;border-radius:20px;background:#fff;color:var(--text);font-family:inherit;
+  font-weight:700;font-size:1.08rem;cursor:pointer;box-shadow:0 6px 0 #B9C8BE;transition:transform .12s;}
+.scan-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #B9C8BE;}
+.scan-btn.on{background:var(--yellow);}
+.scan-btn[hidden]{display:none;}
+.scan-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;}
+.scan-err .scan-btn{background:var(--green);color:#fff;box-shadow:0 6px 0 var(--green-dark);}
 
 /* Ana sayfa */
 .hero{text-align:center;padding:10px 0 6px;}
@@ -151,20 +301,20 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 .btn-install:active{transform:translateY(3px);box-shadow:0 3px 0 #CFE6D3,var(--shadow);}
 .btn-install img{width:30px;height:30px;border-radius:8px;}
 .btn-install[hidden]{display:none;}
-.install-dlg{border:none;border-radius:28px;padding:22px 22px 18px;width:calc(100% - 32px);max-width:420px;
+.dlg{border:none;border-radius:28px;padding:22px 22px 18px;width:calc(100% - 32px);max-width:420px;
   margin:auto;color:var(--text);background:var(--card);box-shadow:var(--shadow);font-family:inherit;}
-.install-dlg::backdrop{background:rgba(43,58,46,.5);}
-.install-dlg[open]{animation:pop .35s cubic-bezier(.2,1.4,.4,1);}
-.install-dlg:not([open]){display:none;}
-.install-dlg.fallback[open]{display:block;position:fixed;inset:0;z-index:60;height:max-content;}
-.install-dlg h2{display:flex;align-items:center;gap:10px;font-size:1.35rem;color:var(--green-dark);margin-bottom:12px;}
-.install-dlg h2 img{width:44px;height:44px;border-radius:12px;}
-.install-dlg ol{padding-left:1.4em;display:grid;gap:10px;font-size:1.05rem;line-height:1.45;font-weight:500;}
-.install-dlg .note{margin-top:12px;font-size:.92rem;color:var(--text-soft);}
-.install-dlg .ico{display:inline-grid;place-items:center;vertical-align:-6px;width:28px;height:28px;
+.dlg::backdrop{background:rgba(43,58,46,.5);}
+.dlg[open]{animation:pop .35s cubic-bezier(.2,1.4,.4,1);}
+.dlg:not([open]){display:none;}
+.dlg.fallback[open]{display:block;position:fixed;inset:0;z-index:60;height:max-content;}
+.dlg h2{display:flex;align-items:center;gap:10px;font-size:1.35rem;color:var(--green-dark);margin-bottom:12px;}
+.dlg h2 img{width:44px;height:44px;border-radius:12px;}
+.dlg ol{padding-left:1.4em;display:grid;gap:10px;font-size:1.05rem;line-height:1.45;font-weight:500;}
+.dlg .note{margin-top:12px;font-size:.92rem;color:var(--text-soft);}
+.dlg .ico{display:inline-grid;place-items:center;vertical-align:-6px;width:28px;height:28px;
   border-radius:8px;background:#EAF4FF;color:#0A7AFF;}
-.install-dlg .ico svg{width:18px;height:18px;}
-.install-dlg .btn-next{width:100%;margin-top:16px;height:56px;}
+.dlg .ico svg{width:18px;height:18px;}
+.dlg .btn-next{width:100%;margin-top:16px;height:56px;}
 
 /* Ortak SVG animasyonları */
 .pulse{animation:pulse 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
@@ -178,6 +328,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9;}}
 .cheer{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(0);z-index:51;
   background:var(--card);border-radius:30px;box-shadow:var(--shadow);padding:22px 34px;
+  width:max-content;max-width:calc(100vw - 40px);text-align:center;overflow-wrap:anywhere;
   font-size:1.6rem;font-weight:700;color:var(--green-dark);pointer-events:none;}
 .cheer.show{animation:cheerpop 1.8s cubic-bezier(.2,1.4,.4,1) forwards;}
 @keyframes cheerpop{0%{transform:translate(-50%,-50%) scale(0)}18%{transform:translate(-50%,-50%) scale(1.05)}
@@ -299,22 +450,65 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 <body>
 <div class="clouds"><div class="cloud c1"></div><div class="cloud c2"></div></div>
 
-<!-- ANA SAYFA -->
-<section class="page" id="page-home">
+<!-- KAŞİF GİRİŞİ -->
+<section class="page" id="page-kasif">
+  <div class="hero">
+    <span class="mascot">🥬</span>
+    <div class="big">Merhaba Kaşif!</div>
+    <div class="sub">Kendini tanıt, keşfe başlayalım!</div>
+    <button class="btn-speak" type="button" style="display:inline-flex;margin-top:12px" data-say="Merhaba kaşif! Adını yaz, kız mı erkek mi olduğunu seç ve yaşını söyle. Sonra Keşfe Başla düğmesine dokun.">🔊 Dinle</button>
+  </div>
+  <form class="kasif-form" id="kasifForm" novalidate autocomplete="off">
+    <p class="pending-note" id="pendingNote" hidden></p>
+    <div class="field">
+      <label class="flabel" for="kasifAd">✏️ Adın ne?</label>
+      <input class="finput" id="kasifAd" name="ad" type="text" maxlength="16" placeholder="Adını yaz"
+        autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" aria-describedby="adErr">
+      <p class="ferr" id="adErr" hidden>✏️ Adını yazar mısın? En az 2 harf olsun.</p>
+    </div>
+    <fieldset class="field">
+      <legend class="flabel">🧒 Kız mısın, erkek mi?</legend>
+      <div class="gender" id="kasifCinsiyet" role="radiogroup" aria-describedby="cinsErr">
+        <label class="gopt kiz"><input type="radio" name="cinsiyet" value="kiz"><span class="gbox"><span class="gface" aria-hidden="true">👧</span>Kız</span></label>
+        <label class="gopt erkek"><input type="radio" name="cinsiyet" value="erkek"><span class="gbox"><span class="gface" aria-hidden="true">👦</span>Erkek</span></label>
+      </div>
+      <p class="ferr" id="cinsErr" hidden>👆 Birini seçer misin?</p>
+    </fieldset>
+    <div class="field">
+      <label class="flabel" for="kasifYas">🎂 Kaç yaşındasın?</label>
+      <div class="spin">
+        <button type="button" class="spin-btn" id="yasEksi" aria-label="Yaşı azalt">−</button>
+        <span class="spin-num"><input class="spin-val" id="kasifYas" name="yas" type="number" inputmode="numeric"
+          min="3" max="15" step="1" value="7"><span class="spin-unit">yaş</span></span>
+        <button type="button" class="spin-btn" id="yasArti" aria-label="Yaşı artır">+</button>
+      </div>
+    </div>
+    <button class="btn-next" type="submit">🚀 Keşfe Başla!</button>
+  </form>
+</section>
+
+<!-- KEŞİF SAYFASI (soru kartları) -->
+<section class="page" id="page-kesif">
+  <div class="appbar" id="appbar">
+    <button class="btn-home" id="backBtn" type="button" aria-label="Keşif sayfasına dön" hidden>🏠</button>
+    <span class="spacer"></span>
+    <button class="me" id="meBtn" type="button" aria-haspopup="dialog" hidden><span class="me-name" id="meName"></span><span class="me-av" id="meAv" aria-hidden="true"></span></button>
+  </div>
   <div class="hero">
     <span class="mascot">🥬</span>
     <div class="big">Küçük Çiftçiler</div>
     <div class="sub">Marul Serası Keşif Kiti · Kartındaki QR kodu okut, öğrenmeye başla!</div>
+    <div class="kesif-prog" id="kesifProg" hidden><span id="kesifProgTxt"></span><span class="bar" aria-hidden="true"><span id="kesifProgBar"></span></span></div>
     <button class="btn-install" id="installBtn" type="button" hidden><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</button>
   </div>
   <div class="menu">
-    <div class="mitem" data-q="1"><button class="mcard" onclick="go('soru1')"><span class="ic">🌱</span><span class="tt">Tohum nedir?</span><span class="no">1</span></button></div>
-    <div class="mitem" data-q="2"><button class="mcard" onclick="go('soru2')"><span class="ic">🥬</span><span class="tt">Marul nasıl yetişir?</span><span class="no">2</span></button></div>
-    <div class="mitem" data-q="3"><button class="mcard" onclick="go('soru3')"><span class="ic">🏡</span><span class="tt">Sera nedir?</span><span class="no">3</span></button></div>
-    <div class="mitem" data-q="4"><button class="mcard" onclick="go('soru4')"><span class="ic">☀️</span><span class="tt">Bitkiler neden ışığa ihtiyaç duyar?</span><span class="no">4</span></button></div>
-    <div class="mitem" data-q="5"><button class="mcard" onclick="go('soru5')"><span class="ic">💧</span><span class="tt">Bitkiler neden suya ihtiyaç duyar?</span><span class="no">5</span></button></div>
-    <div class="mitem" data-q="6"><button class="mcard" onclick="go('soru6')"><span class="ic">🌡️</span><span class="tt">Tohum çimlenmek için ne ister?</span><span class="no">6</span></button></div>
-    <div class="mitem" data-q="7"><button class="mcard" onclick="go('soru7')"><span class="ic">🌿</span><span class="tt">Tohum ile fide arasındaki fark nedir?</span><span class="no">7</span></button></div>
+    <div class="mitem" data-q="1"><button class="mcard" type="button"><span class="ic">🌱</span><span class="tt">Tohum nedir?</span><span class="no">1</span></button></div>
+    <div class="mitem" data-q="2"><button class="mcard" type="button"><span class="ic">🥬</span><span class="tt">Marul nasıl yetişir?</span><span class="no">2</span></button></div>
+    <div class="mitem" data-q="3"><button class="mcard" type="button"><span class="ic">🏡</span><span class="tt">Sera nedir?</span><span class="no">3</span></button></div>
+    <div class="mitem" data-q="4"><button class="mcard" type="button"><span class="ic">☀️</span><span class="tt">Bitkiler neden ışığa ihtiyaç duyar?</span><span class="no">4</span></button></div>
+    <div class="mitem" data-q="5"><button class="mcard" type="button"><span class="ic">💧</span><span class="tt">Bitkiler neden suya ihtiyaç duyar?</span><span class="no">5</span></button></div>
+    <div class="mitem" data-q="6"><button class="mcard" type="button"><span class="ic">🌡️</span><span class="tt">Tohum çimlenmek için ne ister?</span><span class="no">6</span></button></div>
+    <div class="mitem" data-q="7"><button class="mcard" type="button"><span class="ic">🌿</span><span class="tt">Tohum ile fide arasındaki fark nedir?</span><span class="no">7</span></button></div>
   </div>
   <div class="qr-bar">
     <span>🖨️ QR modu: kartın köşesindeki butonla o sorunun QR kodunu indir.</span>
@@ -327,7 +521,6 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 <!-- SORU 1: TOHUM -->
 <section class="page" id="page-soru1">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 1 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohum, yeni bir bitkinin başlangıcıdır. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.">🔊 Dinle</button>
   </div>
@@ -339,7 +532,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
       <circle cx="60" cy="225" r="5" fill="#6E4629"/><circle cx="330" cy="238" r="6" fill="#6E4629"/>
       <circle cx="150" cy="242" r="4" fill="#6E4629"/>
       <circle cx="340" cy="48" r="30" fill="#FFD653" class="pulse"/>
-      <g class="spin-slow" style="transform-origin:340px 48px">
+      <g class="spin-slow"><!-- ışınların kutusu güneşe ortalı: merkez = güneşin merkezi -->
         <g stroke="#FFD653" stroke-width="6" stroke-linecap="round">
           <line x1="340" y1="4" x2="340" y2="16"/><line x1="340" y1="80" x2="340" y2="92"/>
           <line x1="296" y1="48" x2="308" y2="48"/><line x1="372" y1="48" x2="384" y2="48"/>
@@ -362,13 +555,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint" id="seedHint">👆 Tohuma dokun, ne olacağını gör!</p>
   <div class="answer">🌱 Tohum, <strong>yeni bir bitkinin başlangıcıdır</strong>. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru2')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 2: MARUL NASIL YETİŞİR -->
 <section class="page" id="page-soru2">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 2 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Marul önce tohum olarak başlar. Tohum uygun koşullarda su aldığında çimlenir. Daha sonra kök, gövde ve yapraklar gelişir. Küçük bitkiye fide denir. Fide büyüdükçe marul bitkisi gelişir.">🔊 Dinle</button>
   </div>
@@ -419,13 +611,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint">👆 Yuvarlağı sağa kaydır, marulu büyüt!</p>
   <div class="answer">Marul önce <strong>tohum</strong> olarak başlar. Su aldığında <strong>çimlenir</strong>. Sonra kök, gövde ve yapraklar gelişir; küçük bitkiye <strong>fide</strong> denir. Fide büyüdükçe <strong>marul</strong> olur! 🥬</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru3')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 3: SERA -->
 <section class="page" id="page-soru3">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 3 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Sera, bitkilerin yetiştirilmesi için uygun koşulların daha kontrollü şekilde sağlanabildiği özel bir yetiştirme alanıdır. Seralarda bitkilerin ışık, su, sıcaklık ve hava gibi ihtiyaçları takip edilir.">🔊 Dinle</button>
   </div>
@@ -470,13 +661,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <div class="bubble" id="seraBubble">👆 Butonlara dokun, seranın sırlarını keşfet!</div>
   <div class="answer">🏡 Sera, bitkilerin yetiştirilmesi için uygun koşulların <strong>daha kontrollü</strong> sağlandığı özel bir yetiştirme alanıdır. Serada bitkilerin ışık, su, sıcaklık ve hava ihtiyaçları takip edilir.</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru4')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 4: IŞIK / BİTKİNİN MUTFAĞI -->
 <section class="page" id="page-soru4">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 4 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Bitkiler ışığı kullanarak kendi besinlerini üretir. Bitkilerin de kendi yiyeceklerini hazırladıkları bir mutfağı vardır. Bu mutfak yapraklarıdır. Yapraklar ışığı kullanarak bitkinin besin üretmesine yardımcı olur.">🔊 Dinle</button>
   </div>
@@ -508,13 +698,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <button class="btn-big" id="lightBtn">☀️ Işığı Aç!</button>
   </div>
   <div class="answer">☀️ Bitkiler ışığı kullanarak <strong>kendi besinlerini üretir</strong>. Bitkilerin mutfağı <strong>yapraklarıdır</strong> — yapraklar ışığı kullanarak besin hazırlar! Bu yüzden ışık, büyümeleri için çok önemlidir.</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru5')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 5: SU -->
 <section class="page" id="page-soru5">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 5 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Su, bitkinin yaşamını sürdürmesi ve büyümesi için gereklidir. Bitki suyu kökleri aracılığıyla alır ve bitkinin farklı bölümlerine taşır.">🔊 Dinle</button>
   </div>
@@ -545,13 +734,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
   </div>
   <p class="hint">💧 Damlaları izle: kökten yapraklara yolculuk!</p>
   <div class="answer">💧 Su, bitkinin <strong>yaşaması ve büyümesi</strong> için gereklidir. Bitki suyu <strong>kökleriyle</strong> alır ve gövdesinden yapraklarına kadar <strong>her bölümüne taşır</strong>.</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru6')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 6: ÇİMLENME OYUNU -->
 <section class="page" id="page-soru6">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 6 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohumun çimlenebilmesi için temel olarak su ve uygun sıcaklık gerekir. Çimlenme sonrasında gelişen bitkinin sağlıklı büyümesi için ışık, su, hava ve uygun yetiştirme koşulları önemlidir.">🔊 Dinle</button>
   </div>
@@ -576,13 +764,12 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <div class="gamemsg" id="gameMsg">👆 Tohumun ihtiyaçlarına dokun!</div>
   </div>
   <div class="answer">🌱 Tohumun çimlenmesi için <strong>su</strong> ve <strong>uygun sıcaklık</strong> gerekir. Çimlendikten sonra sağlıklı büyümek içinse <strong>ışık, su, hava</strong> ve uygun yetiştirme koşulları önemlidir.</div>
-  <div class="nextwrap seq"><button class="btn-next" onclick="go('soru7')">Sıradaki Soru ➜</button></div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <!-- SORU 7: TOHUM vs FİDE -->
 <section class="page" id="page-soru7">
   <div class="topbar">
-    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
     <span class="chip">Soru 7 / 7</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohum, bitkinin başlangıç aşamasıdır. Fide ise tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.">🔊 Dinle</button>
   </div>
@@ -603,16 +790,58 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
     <div class="bubble" id="duoBubble">👆 Kartlara dokun, farkı keşfet!</div>
   </div>
   <div class="answer">🌱 <strong>Tohum:</strong> Bitkinin başlangıç aşamasıdır.<br>🌿 <strong>Fide:</strong> Tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.</div>
-  <div class="nextwrap seq">
-    <button class="btn-next" style="background:var(--purple);box-shadow:0 8px 0 #7E4FB4,var(--shadow)" onclick="go('home')">🏠 Ana Sayfa</button>
-    <button class="btn-next" onclick="celebrate('Hepsini öğrendin! 🥇')">🎉 Bitirdim!</button>
-  </div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
 <div class="cheer" id="cheer">🎉 Aferin!</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Sağ alt: istenen kartın QR kodunu okut -->
+<button class="fab-qr" id="fabQr" type="button" aria-label="QR kodu okut" title="QR kodu okut">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>
+    <rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="7" width="4" height="4" rx=".5"/>
+    <rect x="7" y="13" width="4" height="4" rx=".5"/><path d="M13 13h1.5v1.5H13zM17 13v4h-4"/>
+  </svg>
+</button>
+
+<!-- Kaşif profili -->
+<dialog class="dlg" id="meDlg" aria-labelledby="meDlgName">
+  <div class="me-card">
+    <span class="me-big" id="meDlgAv" aria-hidden="true"></span>
+    <h2 id="meDlgName"></h2>
+    <p class="me-sub" id="meDlgYas"></p>
+    <p class="me-prog" id="meDlgProg"></p>
+  </div>
+  <button class="btn-hold" id="resetBtn" type="button" aria-describedby="resetNote"><span class="fill"></span><span class="lbl">🔄 Yeni Kaşif</span></button>
+  <p class="note hold-note" id="resetNote">Yeni kaşif için butona <b>basılı tut</b>. Bu kaşifin bütün keşifleri silinir.</p>
+  <button class="btn-next" id="meClose" type="button" autofocus>Kapat</button>
+</dialog>
+
+<!-- QR okuyucu (uygulama içi kamera) -->
+<dialog class="scan-dlg" id="scanDlg" aria-labelledby="scanTitle">
+  <video class="scan-video" id="scanVideo" playsinline muted autoplay disablepictureinpicture></video>
+  <div class="scan-mask" aria-hidden="true"><div class="scan-frame"><i></i><i></i><i></i><i></i><span class="scan-line"></span></div></div>
+  <div class="scan-top">
+    <h2 id="scanTitle">📷 Kartının QR kodunu kareye getir</h2>
+    <p class="scan-target" id="scanTarget" hidden></p>
+  </div>
+  <div class="scan-msg" id="scanMsg" role="status" aria-live="polite"></div>
+  <div class="scan-err" id="scanErr" role="alert" hidden>
+    <span class="ic" id="scanErrIc" aria-hidden="true"></span>
+    <h3 id="scanErrTitle"></h3>
+    <p id="scanErrTxt"></p>
+    <button class="scan-btn" id="scanRetry" type="button">🔄 Tekrar Dene</button>
+  </div>
+  <div class="scan-bottom">
+    <button class="scan-btn" id="scanTorch" type="button" aria-pressed="false" hidden>🔦 Işık</button>
+    <button class="btn-speak" type="button" data-say="Kartının arkasındaki QR kodunu kameraya göster. Kod sarı karenin içine girsin.">🔊 Dinle</button>
+    <button class="scan-btn" id="scanClose" type="button">✕ Kapat</button>
+  </div>
+</dialog>
 
 <!-- Kurulum rehberi (tarayıcı kendi yükleme penceresini açamadığında) -->
-<dialog class="install-dlg" id="installDlg" aria-labelledby="installTitle">
+<dialog class="dlg" id="installDlg" aria-labelledby="installTitle">
   <h2 id="installTitle"><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</h2>
   <div data-os="ios">
     <ol>
@@ -639,22 +868,326 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 </dialog>
 
 <script>
-/* ---------- Yönlendirme (hash routing) ---------- */
-const PAGES=['home','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
-/* QR/derin link ile doğrudan bir soruya gelindi mi? Uygulama içinde gezinince (go) normal akış açılır. */
-let navigatedInApp=false;
-function route(){
-  let h=(location.hash||'#home').replace('#','');
-  if(!PAGES.includes(h))h='home';
-  document.body.classList.toggle('direct-entry',!navigatedInApp&&h!=='home');
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const el=document.getElementById('page-'+h);
-  if(el)el.classList.add('active');
-  window.scrollTo(0,0);
-  stopSpeak();
+/* ---------- Kaşif kaydı (yalnızca bu cihazda, localStorage) ---------- */
+const STORE_KEY='kucuk-ciftciler.v3';
+const SORU_SAYISI=7;
+const YAS_MIN=3,YAS_MAX=15,YAS_VARSAYILAN=7;
+const AVATAR={kiz:'👧',erkek:'👦'};
+/* Görevli modu (?qr=1): QR kartı indirme + bütün sorular açık, kaşif kaydına dokunulmaz */
+const ADMIN=new URLSearchParams(location.search).has('qr');
+let memStore=null; /* depolama kapalıysa (gizli sekme vb.) oturum boyunca bellekte tut */
+function emptyState(){return{v:3,kasif:null,kesif:{},finalKutlandi:false};}
+function cleanName(s){
+  return String(s).replace(/[^\p{L}\p{M}\s'’.-]/gu,'').replace(/\s+/g,' ').trim().slice(0,16);
 }
-function go(id){navigatedInApp=true;location.hash='#'+id;}
-window.addEventListener('hashchange',route);
+function harfSayisi(s){return (String(s).match(/\p{L}/gu)||[]).length;} /* "--" ya da ". ." isim sayılmasın */
+function clampYas(v){
+  const x=parseInt(v,10);
+  return isNaN(x)?YAS_VARSAYILAN:Math.min(YAS_MAX,Math.max(YAS_MIN,x));
+}
+function newId(){
+  try{return crypto.randomUUID();}catch(e){return Date.now().toString(36)+Math.random().toString(36).slice(2);}
+}
+/* Depodan gelen veriye güvenme: bozuk/eski kayıt uygulamayı kırmasın */
+function cleanState(raw){
+  const s=emptyState();
+  if(!raw||typeof raw!=='object'||raw.v!==3)return s;
+  const k=raw.kasif;
+  if(k&&typeof k==='object'&&AVATAR[k.cinsiyet]&&cleanName(k.ad).length){
+    s.kasif={id:String(k.id||newId()),ad:cleanName(k.ad),cinsiyet:k.cinsiyet,yas:clampYas(k.yas),
+      olusturma:+k.olusturma||Date.now()};
+  }
+  if(raw.kesif&&typeof raw.kesif==='object')
+    for(let n=1;n<=SORU_SAYISI;n++)if(raw.kesif[n])s.kesif[n]=+raw.kesif[n]||Date.now();
+  s.finalKutlandi=!!raw.finalKutlandi;
+  return s;
+}
+function loadState(){
+  let raw;
+  try{const t=localStorage.getItem(STORE_KEY);raw=t?JSON.parse(t):null;}catch(e){raw=memStore;}
+  return cleanState(raw);
+}
+function saveState(){
+  memStore=state;
+  try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}
+}
+let state=loadState();
+function isOpen(n){return ADMIN||!!state.kesif[n];}
+function kesifSayisi(){return Object.keys(state.kesif).length;}
+function hepsiKesfedildi(){return kesifSayisi()>=SORU_SAYISI;}
+let justOpened=0; /* keşif sayfasına dönünce kilidi açılma animasyonu oynatılacak kart */
+function discover(n){
+  if(ADMIN||state.kesif[n])return false;
+  state.kesif[n]=Date.now();saveState();justOpened=n;
+  return true;
+}
+function createKasif(ad,cinsiyet,yas){
+  state.kasif={id:newId(),ad,cinsiyet,yas,olusturma:Date.now()};
+  saveState();
+}
+/* Yeni Kaşif: kayıt silinir, sayfa yeniden yüklenir → sorulardaki bütün etkinlikler de sıfırdan başlar */
+function yeniKasif(){
+  closeScanner();stopSpeak();
+  state=emptyState();memStore=null;
+  try{localStorage.removeItem(STORE_KEY);}catch(e){}
+  history.replaceState(null,'',hashUrl('kasif'));
+  location.reload();
+}
+/* Başka sekmede kaşif değişti ya da sayfa geri önbellekten (bfcache) döndü: güncel kayda uy */
+function syncState(){
+  const prevId=state.kasif&&state.kasif.id;
+  state=loadState();
+  if(prevId&&prevId!==(state.kasif&&state.kasif.id)){closeScanner();location.reload();return;}
+  route();
+}
+window.addEventListener('storage',e=>{if(e.key===STORE_KEY||e.key===null)syncState();});
+window.addEventListener('pageshow',e=>{if(e.persisted)syncState();});
+
+/* ---------- Yönlendirme ----------
+   Adresler: #kasif (giriş) · #kesif (soru kartları) · #soru1…#soru7 (detay). Basılı QR'lar {URL}#soruN açar.
+   Uygulamanın kendi açtığı her geçmiş kaydı {kc:1} ile işaretlenir. İşaretsiz bir #soruN = kart QR'ı
+   telefonun kamerasıyla okutuldu → keşif sayılır. Geri/ileri ile eski kayda dönmek kilit açmaz. */
+const PAGES=['kasif','kesif','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
+let currentPage=null,pendingQ=0,backPending=false;
+function hashUrl(p){return location.pathname+location.search+'#'+p;}
+function hashPage(){
+  let h='';
+  try{h=decodeURIComponent(location.hash.slice(1));}catch(e){}
+  if(h==='home')h='kesif'; /* v2 adresi */
+  return PAGES.includes(h)?h:'kesif';
+}
+function soruNo(p){const m=/^soru(\d)$/.exec(p);return m?+m[1]:0;}
+function route(){
+  backPending=false;
+  const st=history.state,known=!!(st&&st.kc);
+  let page=hashPage();
+  const n=soruNo(page);
+  const yeni=n&&!known?discover(n):false;
+  if(!ADMIN&&!state.kasif){if(n)pendingQ=n;page='kasif';}
+  else if(page==='kasif')page='kesif';
+  else if(n&&!isOpen(n)){page='kesif';toast('🔒 Bu soruyu açmak için kartının QR kodunu okut!');}
+  if(!known&&soruNo(page)){
+    /* dışarıdan gelindi: geri tuşu uygulamadan çıkmasın, keşif sayfasına dönsün */
+    history.replaceState({kc:1},'',hashUrl('kesif'));
+    history.pushState({kc:1,up:1},'',hashUrl(page));
+  }else if(!known||location.hash!=='#'+page){
+    history.replaceState({kc:1,up:known&&st.up&&soruNo(page)?1:0},'',hashUrl(page));
+  }
+  show(page);
+  if(yeni&&page==='soru'+n)celebrate('🌟 Yeni keşif!');
+}
+function go(page){
+  if(page===currentPage||backPending)return;
+  const st=history.state||{};
+  if(soruNo(page)){
+    if(currentPage==='kesif')history.pushState({kc:1,up:1},'',hashUrl(page));
+    else history.replaceState({kc:1,up:st.up?1:0},'',hashUrl(page));
+  }else if(page==='kesif'&&st.up){
+    backPending=true; /* çift dokunuş iki kez geri gidip uygulamadan çıkmasın */
+    setTimeout(()=>{backPending=false;},1000);
+    history.back();return;
+  }else history.replaceState({kc:1},'',hashUrl(page));
+  route();
+}
+window.addEventListener('popstate',route);
+window.addEventListener('hashchange',route); /* popstate'i hash değişiminde göndermeyen eski tarayıcılar için */
+
+const appbar=document.getElementById('appbar');
+function show(page){
+  const changed=page!==currentPage;
+  currentPage=page;
+  document.body.dataset.page=page;
+  if(changed){
+    closeScanner();closeDlg(document.getElementById('meDlg'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));
+    document.getElementById('page-'+page).prepend(appbar);
+    window.scrollTo(0,0);
+    stopSpeak();
+  }
+  document.getElementById('backBtn').hidden=!soruNo(page);
+  renderKasif();
+  renderKesif();
+  if(page==='kasif')prepKasifForm();
+  if(page==='kesif')finalKutla();
+}
+
+/* ---------- Kısa bilgi mesajı ---------- */
+let toastT=0;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ---------- Pencereler (dialog) ---------- */
+function isDlgOpen(d){return d.hasAttribute('open');}
+function openDlg(d){
+  if(isDlgOpen(d))return;
+  if(typeof d.showModal==='function')d.showModal();
+  else{d.classList.add('fallback');d.setAttribute('open','');} /* eski iOS: <dialog> desteği yok */
+}
+function closeDlg(d){
+  if(!isDlgOpen(d))return;
+  if(typeof d.close==='function')d.close();
+  else{d.removeAttribute('open');d.dispatchEvent(new Event('close'));}
+}
+function closeOnBackdrop(d,close){ /* sadece pencerenin dışına dokununca (iç boşluk da target===d olur) */
+  d.addEventListener('click',e=>{
+    if(e.target!==d)return;
+    const r=d.getBoundingClientRect();
+    if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)close();
+  });
+}
+
+/* ---------- Kaşif girişi (isim · kız/erkek · yaş) ---------- */
+const kasifForm=document.getElementById('kasifForm');
+const adInput=document.getElementById('kasifAd'),yasInput=document.getElementById('kasifYas');
+const yasEksi=document.getElementById('yasEksi'),yasArti=document.getElementById('yasArti');
+function setYas(v){
+  const y=clampYas(v);
+  yasInput.value=y;
+  yasEksi.disabled=y<=YAS_MIN;yasArti.disabled=y>=YAS_MAX;
+}
+yasEksi.addEventListener('click',()=>setYas(clampYas(yasInput.value)-1));
+yasArti.addEventListener('click',()=>setYas(clampYas(yasInput.value)+1));
+yasInput.addEventListener('change',()=>setYas(yasInput.value));
+yasInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setYas(yasInput.value);yasInput.blur();}});
+function setFieldErr(field,errId,bad){
+  document.getElementById(errId).hidden=!bad;
+  field.setAttribute('aria-invalid',bad?'true':'false');
+}
+function prepKasifForm(){
+  const note=document.getElementById('pendingNote');
+  note.hidden=!pendingQ;
+  if(pendingQ)note.textContent=`🌟 ${pendingQ}. soruyu keşfettin! Önce kendini tanıt, sonra hemen ona gidiyoruz.`;
+  setYas(yasInput.value);
+}
+adInput.addEventListener('input',()=>{if(harfSayisi(cleanName(adInput.value))>=2)setFieldErr(adInput,'adErr',false);});
+/* klavyedeki "Bitti" formu göndermesin: çocuk daha seçim yapmadan hata görmesin, sadece klavye kapansın */
+adInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();adInput.blur();}});
+kasifForm.addEventListener('change',e=>{
+  if(e.target.name==='cinsiyet')setFieldErr(document.getElementById('kasifCinsiyet'),'cinsErr',false);
+});
+kasifForm.addEventListener('submit',e=>{
+  e.preventDefault();
+  const ad=cleanName(adInput.value);
+  const secili=kasifForm.querySelector('input[name="cinsiyet"]:checked');
+  const cinsiyet=secili?secili.value:'';
+  const adKotu=harfSayisi(ad)<2,cinsKotu=!AVATAR[cinsiyet];
+  setFieldErr(adInput,'adErr',adKotu);
+  setFieldErr(document.getElementById('kasifCinsiyet'),'cinsErr',cinsKotu);
+  if(adKotu||cinsKotu){
+    (adKotu?adInput:kasifForm.querySelector('input[name="cinsiyet"]')).focus();
+    return;
+  }
+  if(document.activeElement)document.activeElement.blur(); /* ekran klavyesi kapansın */
+  createKasif(ad,cinsiyet,clampYas(yasInput.value));
+  const q=pendingQ;pendingQ=0;
+  if(q&&isOpen(q)){
+    history.replaceState({kc:1},'',hashUrl('kesif'));
+    history.pushState({kc:1,up:1},'',hashUrl('soru'+q));
+    route();celebrate('🌟 Yeni keşif!');
+  }else{
+    go('kesif');celebrate(`👋 Hoş geldin ${ad}!`);
+  }
+});
+
+/* ---------- Sağ üst: kaşif profili ---------- */
+const meDlg=document.getElementById('meDlg'),resetBtn=document.getElementById('resetBtn');
+function renderKasif(){
+  const k=state.kasif,btn=document.getElementById('meBtn');
+  btn.hidden=ADMIN||!k;
+  if(!k)return;
+  document.getElementById('meName').textContent=k.ad;
+  const av=document.getElementById('meAv');
+  av.textContent=AVATAR[k.cinsiyet];av.className='me-av '+k.cinsiyet;
+  btn.setAttribute('aria-label',`Kaşif ${k.ad}: profili aç`);
+}
+function openMe(){
+  const k=state.kasif;if(!k)return;
+  const av=document.getElementById('meDlgAv');
+  av.textContent=AVATAR[k.cinsiyet];av.className='me-big '+k.cinsiyet;
+  document.getElementById('meDlgName').textContent=k.ad;
+  document.getElementById('meDlgYas').textContent=`${k.yas} yaşında kaşif`;
+  const c=kesifSayisi();
+  document.getElementById('meDlgProg').textContent=c>=SORU_SAYISI?'🥇 Bütün soruları keşfetti!':`🔍 ${c} / ${SORU_SAYISI} soru keşfedildi`;
+  holdCancel(false);
+  openDlg(meDlg);
+}
+document.getElementById('meBtn').addEventListener('click',()=>{stopSpeak();openMe();});
+document.getElementById('meClose').addEventListener('click',()=>closeDlg(meDlg));
+closeOnBackdrop(meDlg,()=>closeDlg(meDlg));
+meDlg.addEventListener('close',()=>holdCancel(false));
+/* Yeni Kaşif: çocuk yanlışlıkla başkasının keşiflerini silmesin diye basılı tutarak onaylanır */
+const HOLD_MS=1500;
+let holdT=0,holdAt=0,holdKey=false;
+function holdStart(key){
+  if(holdT)return;
+  holdAt=Date.now();holdKey=key;
+  resetBtn.classList.remove('nudge');resetBtn.classList.add('holding');
+  document.getElementById('resetNote').classList.remove('warn');
+  holdT=setTimeout(()=>{holdT=0;resetBtn.classList.remove('holding');yeniKasif();},HOLD_MS);
+}
+function holdCancel(nudge){
+  if(!holdT)return;
+  clearTimeout(holdT);holdT=0;
+  resetBtn.classList.remove('holding');
+  if(nudge&&Date.now()-holdAt<HOLD_MS){
+    void resetBtn.offsetWidth;resetBtn.classList.add('nudge');
+    document.getElementById('resetNote').classList.add('warn');
+  }
+}
+resetBtn.addEventListener('pointerdown',e=>{
+  if(e.button!==0)return;
+  try{resetBtn.setPointerCapture(e.pointerId);}catch(err){}
+  holdStart(false);
+});
+resetBtn.addEventListener('pointerup',()=>holdCancel(true));
+resetBtn.addEventListener('pointercancel',()=>holdCancel(false));
+resetBtn.addEventListener('keydown',e=>{
+  if(e.key!==' '&&e.key!=='Enter')return;
+  e.preventDefault();if(!e.repeat)holdStart(true);
+});
+resetBtn.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')holdCancel(true);});
+/* odak başka yere geçerse klavyeyle basılı tutma biter (Safari fareyle basınca butondan odağı alır: dokunmaya karışmasın) */
+resetBtn.addEventListener('blur',()=>{if(holdKey)holdCancel(false);});
+resetBtn.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- Keşif sayfası ---------- */
+document.querySelectorAll('.mitem').forEach(item=>{
+  const lock=document.createElement('span');
+  lock.className='lock';lock.setAttribute('aria-hidden','true');lock.textContent='🔒';
+  item.prepend(lock);
+  item.querySelector('.mcard').addEventListener('click',()=>{
+    const n=+item.dataset.q;
+    if(isOpen(n))go('soru'+n);else openScanner(n); /* keşfedilmemiş: önce kartın QR'ı okutulur */
+  });
+});
+function renderKesif(){
+  const c=kesifSayisi();
+  document.querySelectorAll('.mitem').forEach(item=>{
+    const n=+item.dataset.q,open=isOpen(n);
+    item.classList.toggle('locked',!open);
+    item.querySelector('.mcard').setAttribute('aria-label',
+      `Soru ${n}: ${qrTitle(n)}`+(open?'':'. Kilitli: açmak için kartın QR kodunu okut'));
+  });
+  const prog=document.getElementById('kesifProg');
+  prog.hidden=ADMIN||!state.kasif||c>=SORU_SAYISI; /* hepsi bitince görünüm sade: sadece açık kartlar */
+  document.getElementById('kesifProgTxt').textContent=`🔍 ${c} / ${SORU_SAYISI} keşif`;
+  document.getElementById('kesifProgBar').style.width=(c/SORU_SAYISI*100)+'%';
+  if(justOpened&&currentPage==='kesif'){
+    const it=document.querySelector(`.mitem[data-q="${justOpened}"]`);
+    justOpened=0;
+    if(it){it.classList.remove('just-open');void it.offsetWidth;it.classList.add('just-open');}
+  }
+}
+function finalKutla(){
+  if(ADMIN||!state.kasif||!hepsiKesfedildi()||state.finalKutlandi)return;
+  state.finalKutlandi=true;saveState();
+  const ad=state.kasif.ad;
+  setTimeout(()=>celebrate(`🥇 Hepsini keşfettin ${ad}!`),450);
+}
+document.getElementById('backBtn').addEventListener('click',()=>go('kesif'));
 
 /* ---------- Sesli okuma ---------- */
 let currentBtn=null;
@@ -797,7 +1330,9 @@ const LIBS={
   qrcode:{global:'qrcode',src:'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
     sri:'sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz'},
   jszip:{global:'JSZip',src:'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js',
-    sri:'sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG'}
+    sri:'sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG'},
+  /* QR okuyucu yedeği (BarcodeDetector yoksa, ör. iOS): uygulamayla birlikte gelir, internetsiz de çalışır */
+  jsqr:{global:'jsQR',src:'vendor/jsQR.min.js'}
 };
 const libLoads={};
 function loadLib(name){
@@ -806,7 +1341,8 @@ function loadLib(name){
   if(!libLoads[name]){
     libLoads[name]=new Promise((res,rej)=>{
       const s=document.createElement('script');
-      s.src=lib.src;s.integrity=lib.sri;s.crossOrigin='anonymous';s.async=true;
+      s.src=lib.src;s.async=true;
+      if(lib.sri){s.integrity=lib.sri;s.crossOrigin='anonymous';}
       s.onload=()=>window[lib.global]?res(window[lib.global]):rej(new Error('QR aracı yüklenemedi.'));
       s.onerror=()=>{s.remove();rej(new Error('QR aracı yüklenemedi.'));};
       document.head.appendChild(s);
@@ -875,7 +1411,7 @@ const QR_ICON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
   '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>'+
   '<rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v3M14 21h7"/></svg>';
 function initQrMode(){
-  if(!new URLSearchParams(location.search).has('qr'))return;
+  if(!ADMIN)return;
   document.body.classList.add('qr-mode');
   const items=[...document.querySelectorAll('.mitem')];
   items.forEach(item=>{
@@ -900,6 +1436,200 @@ function initQrMode(){
   }));
 }
 
+/* ---------- QR okuyucu (uygulama içi kamera) ----------
+   Kart QR'ı okununca o sorunun kilidi açılır ve detayına gidilir. Önce tarayıcının kendi
+   BarcodeDetector'ı (Android Chrome), yoksa yerel jsQR (iOS vb.) kullanılır. */
+/* Basılı kartlardaki adresler: v1 claude.ai yayını, v2+ GitHub Pages (eski bilim-kesif-kiti.html dahil) */
+const QR_KAYNAKLARI=[
+  {host:'erzurum-bilim-merkezi.github.io',path:/^\/e-b-m(\/|$)/i},
+  {host:'claude.ai',path:/\/7MiQe11QdcysDDtLKXLdx8(\/|$)/}
+];
+function qrSoru(text){
+  let u;
+  try{u=new URL(String(text).trim());}catch(e){return 0;}
+  const m=/^#soru([1-7])$/i.exec(u.hash);
+  if(!m||!/^https?:$/.test(u.protocol))return 0;
+  const host=u.hostname.toLowerCase();
+  const self=u.origin===location.origin&&u.pathname.startsWith(new URL('./',location.href).pathname);
+  return self||QR_KAYNAKLARI.some(k=>k.host===host&&k.path.test(u.pathname))?+m[1]:0;
+}
+const SCAN_MS=110,SCAN_MAX=800; /* ~9 kare/sn, en uzun kenar 800 px: eski tabletlerde de akıcı */
+const scanDlg=document.getElementById('scanDlg'),scanVideo=document.getElementById('scanVideo');
+const scanTorch=document.getElementById('scanTorch');
+let scanSid=0,scanStream=null,scanTimer=0,scanDetector=null,scanTarget=0,scanBad='',scanBadAt=0,torchOn=false;
+async function jsqrDetector(){
+  const jsQR=await loadLib('jsqr');
+  const cv=document.createElement('canvas'),ctx=cv.getContext('2d',{willReadFrequently:true});
+  return{native:false,read(v){
+    const vw=v.videoWidth,vh=v.videoHeight;
+    if(!vw||!vh)return null;
+    const k=Math.min(1,SCAN_MAX/Math.max(vw,vh)),w=Math.round(vw*k),h=Math.round(vh*k);
+    if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h;}
+    ctx.drawImage(v,0,0,w,h);
+    const r=jsQR(ctx.getImageData(0,0,w,h).data,w,h,{inversionAttempts:'dontInvert'});
+    return r?r.data:null;
+  }};
+}
+async function makeDetector(){
+  if('BarcodeDetector' in window){
+    try{
+      const formats=await BarcodeDetector.getSupportedFormats();
+      if(formats.includes('qr_code')){
+        const bd=new BarcodeDetector({formats:['qr_code']});
+        return{native:true,async read(v){const r=await bd.detect(v);return r.length?r[0].rawValue:null;}};
+      }
+    }catch(e){}
+  }
+  return jsqrDetector();
+}
+const CAM_HATA={
+  izin:['🙈','Kamera izni gerekiyor','Tarayıcı sorunca “İzin ver”e dokun. Daha önce reddettiysen tarayıcı ayarlarından bu site için kamerayı aç, sonra Tekrar Dene’ye dokun.'],
+  yok:['📷','Kamera bulunamadı','Bu cihazda kullanılabilir bir kamera yok. QR kodu kameralı bir telefon ya da tabletle okut.'],
+  mesgul:['⏳','Kamera şu an meşgul','Kamera başka bir uygulamada açık olabilir. O uygulamayı kapatıp Tekrar Dene’ye dokun.'],
+  guvensiz:['🔒','Kamera açılamıyor','Kamera yalnızca güvenli (https) bağlantıda çalışır. Uygulamayı resmi adresinden aç.'],
+  arac:['⚠️','QR okuyucu yüklenemedi','İnternete bağlanıp Tekrar Dene’ye dokun.'],
+  genel:['⚠️','Kamera açılamadı','Bir sorun oldu. Tekrar Dene’ye dokun.']
+};
+function camErr(e){
+  const n=e&&e.name;
+  if(n==='NotAllowedError'||n==='SecurityError'||n==='PermissionDeniedError')return 'izin';
+  if(n==='NotFoundError'||n==='DevicesNotFoundError'||n==='OverconstrainedError')return 'yok';
+  if(n==='NotReadableError'||n==='TrackStartError'||n==='AbortError')return 'mesgul';
+  return 'genel';
+}
+function scanMsg(msg,warn){
+  const box=document.getElementById('scanMsg');
+  box.textContent='';
+  if(!msg)return;
+  const s=document.createElement('span');
+  s.textContent=msg;if(warn)s.className='warn';
+  box.appendChild(s);
+}
+function scanError(kind){
+  stopCamera();
+  const [ic,title,txt]=CAM_HATA[kind]||CAM_HATA.genel;
+  document.getElementById('scanErrIc').textContent=ic;
+  document.getElementById('scanErrTitle').textContent=title;
+  document.getElementById('scanErrTxt').textContent=txt;
+  scanMsg('');
+  document.getElementById('scanErr').hidden=false;
+  document.getElementById('scanRetry').focus();
+}
+function stopTracks(s){try{s.getTracks().forEach(t=>t.stop());}catch(e){}}
+/* Kamerayı tamamen kapat: pil, ısınma, kamera ışığı. Bekleyen her şey (izin, döngü) scanSid ile iptal olur. */
+function stopCamera(){
+  scanSid++;
+  clearTimeout(scanTimer);scanTimer=0;
+  if(scanStream){stopTracks(scanStream);scanStream=null;}
+  try{scanVideo.pause();}catch(e){}
+  scanVideo.srcObject=null;
+  torchOn=false;scanTorch.hidden=true;scanTorch.classList.remove('on');scanTorch.setAttribute('aria-pressed','false');
+}
+async function startCamera(){
+  stopCamera();
+  const sid=scanSid;
+  document.getElementById('scanErr').hidden=true;
+  scanMsg('📷 Kamera açılıyor...');
+  const md=navigator.mediaDevices;
+  if(!md||!md.getUserMedia){scanError(window.isSecureContext===false?'guvensiz':'yok');return;}
+  const detP=scanDetector?Promise.resolve(scanDetector):makeDetector();
+  detP.catch(()=>{}); /* hata aşağıda ele alınır; "yakalanmamış hata" uyarısı çıkmasın */
+  let stream;
+  try{
+    stream=await md.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+  }catch(e){if(sid===scanSid)scanError(camErr(e));return;}
+  if(sid!==scanSid){stopTracks(stream);return;} /* izin beklenirken pencere kapandı */
+  try{scanDetector=await detP;}
+  catch(e){stopTracks(stream);if(sid===scanSid)scanError('arac');return;}
+  if(sid!==scanSid){stopTracks(stream);return;}
+  scanStream=stream;
+  const track=stream.getVideoTracks()[0];
+  if(track)track.addEventListener('ended',()=>{if(sid===scanSid)scanError('mesgul');});
+  scanVideo.srcObject=stream;
+  try{await scanVideo.play();}catch(e){} /* muted+playsinline: iOS'ta da kendiliğinden oynar */
+  if(sid!==scanSid)return;
+  scanMsg('');
+  let caps={};
+  try{caps=track&&track.getCapabilities?track.getCapabilities():{};}catch(e){}
+  scanTorch.hidden=!caps.torch;
+  scanLoop(sid);
+}
+function scanLoop(sid){
+  if(sid!==scanSid)return;
+  const next=()=>{if(sid===scanSid)scanTimer=setTimeout(()=>scanLoop(sid),SCAN_MS);};
+  if(scanVideo.readyState<2){next();return;}
+  const det=scanDetector;
+  Promise.resolve().then(()=>det.read(scanVideo)).then(text=>{
+    if(sid!==scanSid)return;
+    if(text&&scanResult(text))return;
+    next();
+  },async()=>{
+    if(sid!==scanSid)return;
+    if(det.native){ /* bazı cihazlarda yerel okuyucu çalışırken hata veriyor: jsQR'a geç */
+      try{scanDetector=await jsqrDetector();}catch(e){if(sid===scanSid)scanError('arac');return;}
+    }
+    next();
+  });
+}
+function titresim(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+function scanResult(text){
+  const n=qrSoru(text);
+  if(!n){
+    const now=Date.now();
+    if(text!==scanBad||now-scanBadAt>4000){
+      scanBad=text;scanBadAt=now;
+      scanMsg('🤔 Bu QR bizim kartlarımızdan değil. Soru kartının QR kodunu okut!',true);
+      titresim([40,60,40]);
+    }
+    return false;
+  }
+  titresim(120);
+  const hedef=scanTarget;
+  closeScanner();
+  const yeni=discover(n);
+  go('soru'+n);
+  if(yeni)celebrate('🌟 Yeni keşif!');
+  if(hedef&&hedef!==n)toast(`📇 Bu, ${n}. sorunun kartıymış!`);
+  return true;
+}
+function openScanner(target){
+  stopSpeak();
+  scanTarget=target||0;
+  const t=document.getElementById('scanTarget');
+  t.hidden=!scanTarget;
+  if(scanTarget){
+    const ic=document.querySelector(`.mitem[data-q="${scanTarget}"] .ic`).textContent;
+    t.textContent=`${ic} Soru ${scanTarget}: ${qrTitle(scanTarget)}`;
+  }
+  scanBad='';scanMsg('');
+  document.getElementById('scanErr').hidden=true;
+  openDlg(scanDlg);
+  startCamera();
+}
+function closeScanner(){
+  stopCamera();
+  closeDlg(scanDlg);
+}
+scanDlg.addEventListener('close',()=>{stopCamera();stopSpeak();}); /* Esc / Android geri tuşu da buraya düşer */
+document.getElementById('scanClose').addEventListener('click',closeScanner);
+document.getElementById('scanRetry').addEventListener('click',startCamera);
+scanTorch.addEventListener('click',async()=>{
+  const track=scanStream&&scanStream.getVideoTracks()[0];
+  if(!track)return;
+  try{
+    await track.applyConstraints({advanced:[{torch:!torchOn}]});
+    torchOn=!torchOn;
+    scanTorch.classList.toggle('on',torchOn);scanTorch.setAttribute('aria-pressed',String(torchOn));
+  }catch(e){scanTorch.hidden=true;}
+});
+/* Uygulama arka plana geçince kamera kapanır, geri gelince (ör. ayarlardan izin verip dönünce) yeniden açılır */
+document.addEventListener('visibilitychange',()=>{
+  if(!isDlgOpen(scanDlg))return;
+  if(document.hidden)stopCamera();else startCamera();
+});
+window.addEventListener('pagehide',closeScanner);
+document.getElementById('fabQr').addEventListener('click',()=>openScanner(0));
+
 /* ---------- Uygulamayı yükle (PWA) ---------- */
 /* Android/Chrome/Edge: tarayıcının kendi yükleme penceresi. iOS: Apple buna izin vermez → adım adım rehber. */
 let installEvt=null;
@@ -918,13 +1648,9 @@ function installPlatform(){
 function openInstallGuide(){
   const dlg=document.getElementById('installDlg'),os=installPlatform();
   dlg.querySelectorAll('[data-os]').forEach(el=>{el.hidden=el.dataset.os!==os;});
-  if(typeof dlg.showModal==='function')dlg.showModal();
-  else{dlg.classList.add('fallback');dlg.setAttribute('open','');} /* eski iOS: <dialog> desteği yok */
+  openDlg(dlg);
 }
-function closeInstallGuide(){
-  const dlg=document.getElementById('installDlg');
-  if(typeof dlg.close==='function'&&dlg.open)dlg.close();else dlg.removeAttribute('open');
-}
+function closeInstallGuide(){closeDlg(document.getElementById('installDlg'));}
 function initInstall(){
   const btn=document.getElementById('installBtn'),dlg=document.getElementById('installDlg');
   btn.hidden=isInstalled();
@@ -940,11 +1666,7 @@ function initInstall(){
     }catch(e){openInstallGuide();}
   });
   document.getElementById('installClose').addEventListener('click',closeInstallGuide);
-  dlg.addEventListener('click',e=>{ /* sadece pencerenin dışına dokununca kapan (iç boşluk da target===dlg olur) */
-    if(e.target!==dlg)return;
-    const r=dlg.getBoundingClientRect();
-    if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeInstallGuide();
-  });
+  closeOnBackdrop(dlg,closeInstallGuide);
   if('serviceWorker' in navigator){
     window.addEventListener('load',()=>{
       navigator.serviceWorker.register('sw.js').catch(e=>console.warn('Çevrimdışı mod kurulamadı:',e));
@@ -958,6 +1680,7 @@ if(!('speechSynthesis' in window)){
     b.disabled=true;b.innerHTML='🔇 Ses yok';b.style.opacity=.55;
   });
 }
+if('scrollRestoration' in history)history.scrollRestoration='manual'; /* her sayfa en üstten açılır */
 initQrMode();
 initInstall();
 route();
