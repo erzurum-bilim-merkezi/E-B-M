@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Küçük Çiftçiler · Marul Serası Keşif Kiti</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --sky:#BDE9FF; --sky2:#EAFBEF;
+  --green:#3FA34D; --green-dark:#2A7A39; --leaf:#6BC96F;
+  --yellow:#FFD653; --orange:#FF9F43; --soil:#8A5A3B; --soil-dark:#6E4629;
+  --blue:#4FB6E8; --purple:#A46FD8; --pink:#F27DA6; --red:#F0605F; --teal:#2BB6A3;
+  --card:#FFFFFF; --text:#2B3A2E; --text-soft:#5A6E5E;
+  --radius:28px;
+  --shadow:0 10px 26px rgba(43,58,46,.14);
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+*,*::before,*::after{box-sizing:inherit;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  font-family:ui-rounded,'Comic Sans MS','Segoe UI',system-ui,sans-serif;
+  background:linear-gradient(180deg,var(--sky) 0%,var(--sky2) 60%,#F3FBEF 100%);
+  color:var(--text);
+  min-height:100%;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+/* Bulutlar */
+.clouds{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.cloud{position:absolute;background:#fff;border-radius:60px;opacity:.75;filter:blur(1px);}
+.cloud::before,.cloud::after{content:'';position:absolute;background:#fff;border-radius:50%;}
+.c1{width:120px;height:38px;top:6%;left:-140px;animation:drift 55s linear infinite;}
+.c1::before{width:52px;height:52px;top:-24px;left:18px;}
+.c1::after{width:38px;height:38px;top:-16px;left:62px;}
+.c2{width:90px;height:30px;top:14%;left:-110px;animation:drift 75s 12s linear infinite;}
+.c2::before{width:40px;height:40px;top:-18px;left:14px;}
+.c2::after{width:30px;height:30px;top:-12px;left:48px;}
+@keyframes drift{from{transform:translateX(0)}to{transform:translateX(120vw)}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;}
+}
+
+/* Sayfa yapısı */
+.page{display:none;position:relative;z-index:1;min-height:100vh;min-height:100dvh;
+  padding:16px 18px calc(28px + env(safe-area-inset-bottom,0px));
+  max-width:760px;margin:0 auto;flex-direction:column;}
+.page.active{display:flex;animation:pop .45s cubic-bezier(.2,1.4,.4,1);}
+@keyframes pop{from{opacity:0;transform:scale(.96) translateY(14px)}to{opacity:1;transform:none}}
+
+/* Üst bar */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.btn-home{width:56px;height:56px;border-radius:20px;border:none;background:var(--card);
+  box-shadow:var(--shadow);font-size:1.6rem;cursor:pointer;flex-shrink:0;
+  display:grid;place-items:center;transition:transform .15s;}
+.btn-home:active{transform:scale(.9);}
+.chip{background:var(--card);border-radius:999px;padding:10px 18px;box-shadow:var(--shadow);
+  font-weight:600;font-size:1rem;color:var(--text-soft);white-space:nowrap;}
+.spacer{flex:1;}
+.btn-speak{height:56px;border-radius:20px;border:none;background:var(--orange);color:#fff;
+  box-shadow:0 8px 0 #D97F1F, var(--shadow);font-family:inherit;font-weight:700;font-size:1.05rem;
+  padding:0 20px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform .12s;}
+.btn-speak:active{transform:translateY(4px);box-shadow:0 3px 0 #D97F1F;}
+.btn-speak.speaking{background:var(--red);box-shadow:0 8px 0 #B8403F;animation:wob 1s ease-in-out infinite;}
+.btn-speak.speaking:active{box-shadow:0 3px 0 #B8403F;}
+@keyframes wob{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+
+h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;margin:6px 4px 14px;}
+.q-emoji{font-size:1.2em;}
+
+/* Sahne ve kartlar */
+.stage{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:14px;margin-bottom:16px;overflow:hidden;position:relative;}
+.stage svg{display:block;width:100%;height:auto;}
+.answer{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+  padding:20px 22px;font-size:clamp(1.05rem,4vw,1.3rem);line-height:1.55;font-weight:500;}
+.answer strong{color:var(--green-dark);}
+.hint{text-align:center;color:var(--text-soft);font-weight:600;font-size:1rem;margin:10px 0 4px;
+  animation:bounce 2s ease-in-out infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+/* Alt gezinme */
+.nextwrap{margin-top:auto;padding-top:18px;display:flex;gap:12px;}
+.btn-next{flex:1;height:64px;border:none;border-radius:22px;background:var(--green);color:#fff;
+  font-family:inherit;font-weight:700;font-size:1.15rem;cursor:pointer;
+  box-shadow:0 8px 0 var(--green-dark),var(--shadow);transition:transform .12s;}
+.btn-next:active{transform:translateY(5px);box-shadow:0 2px 0 var(--green-dark);}
+
+/* Ana sayfa */
+.hero{text-align:center;padding:10px 0 6px;}
+.hero .big{font-size:clamp(2rem,8vw,3rem);font-weight:700;color:var(--green-dark);}
+.hero .sub{font-size:clamp(1rem,4vw,1.25rem);color:var(--text-soft);font-weight:500;margin-top:6px;}
+.hero .mascot{font-size:clamp(3.2rem,14vw,5rem);display:inline-block;animation:sway 3s ease-in-out infinite;}
+@keyframes sway{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.menu{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:16px;}
+.mcard{border:none;border-radius:26px;padding:18px 12px 16px;cursor:pointer;font-family:inherit;
+  color:#fff;text-align:center;box-shadow:var(--shadow);transition:transform .15s;
+  display:flex;flex-direction:column;align-items:center;gap:6px;}
+.mcard:active{transform:scale(.94);}
+.mcard .ic{font-size:2.4rem;filter:drop-shadow(0 3px 3px rgba(0,0,0,.18));}
+.mcard .tt{font-weight:700;font-size:clamp(.95rem,3.6vw,1.1rem);line-height:1.25;}
+.mcard .no{background:rgba(255,255,255,.3);border-radius:999px;padding:2px 12px;font-weight:700;font-size:.85rem;}
+.mcard:nth-child(1){background:linear-gradient(150deg,#57C15E,#2A8F3C);}
+.mcard:nth-child(2){background:linear-gradient(150deg,#7DCC53,#4A9E2E);}
+.mcard:nth-child(3){background:linear-gradient(150deg,#F7A94B,#E4802A);}
+.mcard:nth-child(4){background:linear-gradient(150deg,#FFC93E,#F09A1F);color:#5A3A00;}
+.mcard:nth-child(4) .no{background:rgba(255,255,255,.5);}
+.mcard:nth-child(5){background:linear-gradient(150deg,#54BEE8,#2A8FC4);}
+.mcard:nth-child(6){background:linear-gradient(150deg,#B07BE0,#7E4FB4);}
+.mcard:nth-child(7){background:linear-gradient(150deg,#F58BAF,#D95C86);grid-column:1/-1;}
+.foot{text-align:center;color:var(--text-soft);font-weight:500;font-size:.9rem;margin-top:18px;}
+
+/* Ortak SVG animasyonları */
+.pulse{animation:pulse 1.6s ease-in-out infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.spin-slow{animation:spin 14s linear infinite;transform-origin:center;transform-box:fill-box;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Konfeti */
+.confetti{position:fixed;top:-20px;z-index:50;pointer-events:none;border-radius:4px;
+  animation:fall linear forwards;}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:.9;}}
+.cheer{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%) scale(0);z-index:51;
+  background:var(--card);border-radius:30px;box-shadow:var(--shadow);padding:22px 34px;
+  font-size:1.6rem;font-weight:700;color:var(--green-dark);pointer-events:none;}
+.cheer.show{animation:cheerpop 1.8s cubic-bezier(.2,1.4,.4,1) forwards;}
+@keyframes cheerpop{0%{transform:translate(-50%,-50%) scale(0)}18%{transform:translate(-50%,-50%) scale(1.05)}
+  80%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(.9);opacity:0}}
+
+/* S1 Tohum */
+#seedScene .seed-g{cursor:pointer;}
+.sprout-part{opacity:0;transition:opacity .5s;}
+.grown .sprout-part{opacity:1;}
+.grown .stem1{animation:growup .9s ease-out;}
+@keyframes growup{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.stem1{transform-origin:bottom center;transform-box:fill-box;}
+.seed-crack{opacity:0;}
+.grown .seed-crack{opacity:1;}
+
+/* S2 Slider */
+.growbox{position:relative;height:290px;}
+.stageimg{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.85);
+  transition:opacity .35s,transform .35s;}
+.stageimg.on{opacity:1;transform:scale(1);}
+.slider{width:100%;height:22px;appearance:none;-webkit-appearance:none;background:transparent;margin:8px 0 2px;}
+.slider::-webkit-slider-runnable-track{height:16px;border-radius:999px;
+  background:linear-gradient(90deg,var(--soil),var(--leaf),var(--green));}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:40px;height:40px;border-radius:50%;
+  background:#fff;border:5px solid var(--green);margin-top:-12px;box-shadow:var(--shadow);cursor:pointer;}
+.slider::-moz-range-track{height:16px;border-radius:999px;
+  background:linear-gradient(90deg,var(--soil),var(--leaf),var(--green));}
+.slider::-moz-range-thumb{width:40px;height:40px;border-radius:50%;background:#fff;
+  border:5px solid var(--green);box-shadow:var(--shadow);cursor:pointer;}
+.stagelabel{text-align:center;font-weight:700;font-size:1.25rem;color:var(--green-dark);min-height:1.6em;}
+.stagedots{display:flex;justify-content:space-between;padding:0 8px;font-size:1.3rem;}
+.stagedots span{opacity:.35;transition:opacity .3s,transform .3s;}
+.stagedots span.on{opacity:1;transform:scale(1.25);}
+
+/* S3 Sera */
+.sera-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;}
+.sbtn{border:none;border-radius:18px;padding:12px 4px;font-family:inherit;font-weight:700;
+  font-size:.95rem;color:#fff;cursor:pointer;box-shadow:var(--shadow);transition:transform .15s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;}
+.sbtn .i{font-size:1.7rem;}
+.sbtn:active{transform:scale(.92);}
+.sbtn.sun{background:var(--yellow);color:#6B4A00;}
+.sbtn.water{background:var(--blue);}
+.sbtn.temp{background:var(--red);}
+.sbtn.air{background:var(--teal);}
+.sbtn.picked{outline:4px solid var(--green-dark);outline-offset:2px;}
+.bubble{background:#F2FBEF;border:3px dashed var(--green);border-radius:20px;padding:14px 16px;
+  margin-top:12px;font-weight:600;font-size:1.05rem;min-height:64px;display:flex;align-items:center;
+  gap:10px;transition:opacity .3s;}
+.sera-el{opacity:.45;transition:opacity .3s;}
+.sera-el.lit{opacity:1;animation:pulse 1s ease-in-out 2;}
+
+/* S4 Mutfak */
+.ray{opacity:0;transition:opacity .6s;}
+.lit-on .ray{opacity:1;animation:rays 1.4s ease-in-out infinite;}
+@keyframes rays{0%,100%{opacity:.55}50%{opacity:1}}
+.food-star{opacity:0;transform:scale(0);transform-origin:center;transform-box:fill-box;}
+.lit-on .food-star{animation:star .8s cubic-bezier(.2,1.6,.4,1) forwards;}
+.lit-on .food-star:nth-of-type(2){animation-delay:.25s}
+.lit-on .food-star:nth-of-type(3){animation-delay:.5s}
+@keyframes star{to{opacity:1;transform:scale(1)}}
+.steam{opacity:0;}
+.lit-on .steam{opacity:1;animation:steam 2s ease-in-out infinite;}
+@keyframes steam{0%{transform:translateY(0);opacity:.7}100%{transform:translateY(-14px);opacity:0}}
+.btn-big{width:100%;height:60px;border:none;border-radius:20px;font-family:inherit;font-weight:700;
+  font-size:1.1rem;cursor:pointer;color:#fff;background:var(--yellow);color:#6B4A00;
+  box-shadow:0 8px 0 #D9A21F,var(--shadow);transition:transform .12s;margin-top:12px;}
+.btn-big:active{transform:translateY(4px);box-shadow:0 3px 0 #D9A21F;}
+
+/* S5 Su yolu */
+.drop{animation:riseup 3.2s ease-in infinite;opacity:0;}
+.drop.d2{animation-delay:1.1s}
+.drop.d3{animation-delay:2.2s}
+@keyframes riseup{0%{transform:translateY(0);opacity:0}10%{opacity:1}
+  85%{opacity:1}100%{transform:translateY(-190px);opacity:0}}
+.rootdrop{animation:toRoot 3.2s ease-out infinite;opacity:0;}
+.rootdrop.r2{animation-delay:1.1s}.rootdrop.r3{animation-delay:2.2s}
+@keyframes toRoot{0%{transform:translate(0,0);opacity:0}12%{opacity:1}
+  45%{transform:translate(26px,26px);opacity:1}60%{opacity:0}100%{opacity:0}}
+
+/* S6 Oyun */
+.needs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+.nbtn{border:none;border-radius:20px;padding:14px 6px;font-family:inherit;font-weight:700;
+  font-size:1rem;cursor:pointer;color:#fff;box-shadow:var(--shadow);transition:transform .15s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;}
+.nbtn .i{font-size:1.9rem;}
+.nbtn:active{transform:scale(.92);}
+.nbtn.water{background:var(--blue);}
+.nbtn.temp{background:var(--red);}
+.nbtn.music{background:var(--purple);}
+.nbtn .check{position:absolute;top:-10px;right:-6px;background:var(--green);border-radius:50%;
+  width:32px;height:32px;display:grid;place-items:center;font-size:1rem;transform:scale(0);
+  transition:transform .3s cubic-bezier(.2,1.6,.4,1);box-shadow:var(--shadow);}
+.nbtn.done .check{transform:scale(1);}
+.nbtn.wiggle{animation:wig .5s ease-in-out;}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.gamemsg{text-align:center;font-weight:700;font-size:1.1rem;color:var(--green-dark);
+  min-height:1.8em;margin-top:10px;}
+#gameSprout .sprout-part{opacity:0;}
+#gameSprout.grown .sprout-part{opacity:1;transition:opacity .6s;}
+
+/* S7 Karşılaştırma */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.duo-card{border-radius:24px;padding:12px;text-align:center;cursor:pointer;
+  box-shadow:var(--shadow);transition:transform .15s;border:4px solid transparent;}
+.duo-card:active{transform:scale(.95);}
+.duo-card.seed{background:#FBEFDD;}
+.duo-card.fide{background:#E7F7E4;}
+.duo-card.picked{border-color:var(--green);}
+.duo-card h3{font-size:1.15rem;margin:6px 0 2px;}
+.duo-card p{font-size:.95rem;font-weight:500;color:var(--text-soft);line-height:1.4;}
+.duo-card .art{font-size:3rem;display:inline-block;}
+.duo-card.picked .art{animation:sway 1s ease-in-out 2;}
+
+@media (min-width:560px){.menu{grid-template-columns:repeat(3,1fr);}
+  .mcard:nth-child(7){grid-column:2/3;}}
+</style>
+</head>
+<body>
+<div class="clouds"><div class="cloud c1"></div><div class="cloud c2"></div></div>
+
+<!-- ANA SAYFA -->
+<section class="page" id="page-home">
+  <div class="hero">
+    <span class="mascot">🥬</span>
+    <div class="big">Küçük Çiftçiler</div>
+    <div class="sub">Marul Serası Keşif Kiti · Kartındaki QR kodu okut, öğrenmeye başla!</div>
+  </div>
+  <div class="menu">
+    <button class="mcard" onclick="go('soru1')"><span class="ic">🌱</span><span class="tt">Tohum nedir?</span><span class="no">1</span></button>
+    <button class="mcard" onclick="go('soru2')"><span class="ic">🥬</span><span class="tt">Marul nasıl yetişir?</span><span class="no">2</span></button>
+    <button class="mcard" onclick="go('soru3')"><span class="ic">🏡</span><span class="tt">Sera nedir?</span><span class="no">3</span></button>
+    <button class="mcard" onclick="go('soru4')"><span class="ic">☀️</span><span class="tt">Bitkiler neden ışığa ihtiyaç duyar?</span><span class="no">4</span></button>
+    <button class="mcard" onclick="go('soru5')"><span class="ic">💧</span><span class="tt">Bitkiler neden suya ihtiyaç duyar?</span><span class="no">5</span></button>
+    <button class="mcard" onclick="go('soru6')"><span class="ic">🌡️</span><span class="tt">Tohum çimlenmek için ne ister?</span><span class="no">6</span></button>
+    <button class="mcard" onclick="go('soru7')"><span class="ic">🌿</span><span class="tt">Tohum ile fide arasındaki fark nedir?</span><span class="no">7</span></button>
+  </div>
+  <div class="foot">Teknofest Projesi · Dokun, keşfet, öğren! ✨</div>
+</section>
+
+<!-- SORU 1: TOHUM -->
+<section class="page" id="page-soru1">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 1 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Tohum, yeni bir bitkinin başlangıcıdır. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🌱</span> Tohum nedir?</h1>
+  <div class="stage" id="seedScene">
+    <svg viewBox="0 0 400 260" aria-label="Tohum animasyonu">
+      <rect x="0" y="190" width="400" height="70" fill="#8A5A3B" rx="8"/>
+      <rect x="0" y="190" width="400" height="14" fill="#A9744F" rx="7"/>
+      <circle cx="60" cy="225" r="5" fill="#6E4629"/><circle cx="330" cy="238" r="6" fill="#6E4629"/>
+      <circle cx="150" cy="242" r="4" fill="#6E4629"/>
+      <circle cx="340" cy="48" r="30" fill="#FFD653" class="pulse"/>
+      <g class="spin-slow" style="transform-origin:340px 48px">
+        <g stroke="#FFD653" stroke-width="6" stroke-linecap="round">
+          <line x1="340" y1="4" x2="340" y2="16"/><line x1="340" y1="80" x2="340" y2="92"/>
+          <line x1="296" y1="48" x2="308" y2="48"/><line x1="372" y1="48" x2="384" y2="48"/>
+          <line x1="309" y1="17" x2="317" y2="25"/><line x1="363" y1="71" x2="371" y2="79"/>
+          <line x1="371" y1="17" x2="363" y2="25"/><line x1="317" y1="71" x2="309" y2="79"/>
+        </g>
+      </g>
+      <g class="seed-g" id="seedG">
+        <g class="sprout-part stem1">
+          <path d="M200 200 C 200 170 198 150 200 128" stroke="#3FA34D" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <path d="M200 150 C 178 140 166 118 172 100 C 194 104 204 126 200 150 Z" fill="#6BC96F"/>
+          <path d="M200 138 C 222 128 234 106 228 88 C 206 92 196 114 200 138 Z" fill="#3FA34D"/>
+        </g>
+        <ellipse cx="200" cy="208" rx="26" ry="18" fill="#B8794A" stroke="#8A5A3B" stroke-width="3"/>
+        <path class="seed-crack" d="M188 200 L 196 208 L 190 216" stroke="#6E4629" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <path class="seed-crack" d="M212 200 L 206 209 L 213 216" stroke="#6E4629" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </g>
+      <text x="200" y="248" text-anchor="middle" font-family="inherit" font-weight="600" font-size="15" fill="#FFF3DE" id="seedTxt">Tohuma dokun! 👆</text>
+    </svg>
+  </div>
+  <p class="hint" id="seedHint">👆 Tohuma dokun, ne olacağını gör!</p>
+  <div class="answer">🌱 Tohum, <strong>yeni bir bitkinin başlangıcıdır</strong>. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru2')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 2: MARUL NASIL YETİŞİR -->
+<section class="page" id="page-soru2">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 2 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Marul önce tohum olarak başlar. Tohum uygun koşullarda su aldığında çimlenir. Daha sonra kök, gövde ve yapraklar gelişir. Küçük bitkiye fide denir. Fide büyüdükçe marul bitkisi gelişir.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🥬</span> Marul nasıl yetişir?</h1>
+  <div class="stage">
+    <div class="growbox">
+      <div class="stageimg" data-st="0">
+        <svg viewBox="0 0 300 240" width="100%" height="100%">
+          <rect x="30" y="170" width="240" height="50" rx="10" fill="#8A5A3B"/>
+          <ellipse cx="150" cy="168" rx="22" ry="15" fill="#B8794A" stroke="#8A5A3B" stroke-width="3"/>
+          <text x="150" y="70" text-anchor="middle" font-size="52">🌰</text>
+        </svg>
+      </div>
+      <div class="stageimg" data-st="1">
+        <svg viewBox="0 0 300 240" width="100%" height="100%">
+          <rect x="30" y="170" width="240" height="50" rx="10" fill="#8A5A3B"/>
+          <path d="M150 172 C150 158 148 150 150 140" stroke="#3FA34D" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M150 152 C138 146 132 134 136 124 C148 128 152 140 150 152Z" fill="#6BC96F"/>
+          <path d="M150 146 C162 140 168 128 164 118 C152 122 148 134 150 146Z" fill="#3FA34D"/>
+          <ellipse cx="150" cy="176" rx="18" ry="12" fill="#B8794A" stroke="#8A5A3B" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="stageimg" data-st="2">
+        <svg viewBox="0 0 300 240" width="100%" height="100%">
+          <rect x="30" y="170" width="240" height="50" rx="10" fill="#8A5A3B"/>
+          <path d="M150 175 C150 150 148 130 150 112" stroke="#2E8B3D" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <path d="M150 150 C126 140 114 116 122 96 C146 102 156 126 150 150Z" fill="#6BC96F"/>
+          <path d="M150 138 C174 128 186 104 178 84 C154 90 144 114 150 138Z" fill="#3FA34D"/>
+          <path d="M150 124 C142 100 148 78 162 66 C174 84 166 110 150 124Z" fill="#57B85F"/>
+        </svg>
+      </div>
+      <div class="stageimg" data-st="3">
+        <svg viewBox="0 0 300 240" width="100%" height="100%">
+          <rect x="30" y="180" width="240" height="45" rx="10" fill="#8A5A3B"/>
+          <ellipse cx="150" cy="150" rx="70" ry="56" fill="#3FA34D"/>
+          <ellipse cx="112" cy="140" rx="34" ry="44" fill="#57B85F"/>
+          <ellipse cx="188" cy="140" rx="34" ry="44" fill="#57B85F"/>
+          <ellipse cx="150" cy="128" rx="36" ry="46" fill="#6BC96F"/>
+          <ellipse cx="150" cy="140" rx="22" ry="30" fill="#8FDD8F"/>
+          <path d="M96 118 C86 96 92 76 106 66" stroke="#3FA34D" stroke-width="7" fill="none" stroke-linecap="round"/>
+          <path d="M204 118 C214 96 208 76 194 66" stroke="#3FA34D" stroke-width="7" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stagelabel" id="growLabel">🌰 Tohum</div>
+    <input type="range" class="slider" id="growSlider" min="0" max="100" value="0" aria-label="Büyüme aşaması">
+    <div class="stagedots" id="growDots"><span class="on">🌰</span><span>🌱</span><span>🌿</span><span>🥬</span></div>
+  </div>
+  <p class="hint">👆 Yuvarlağı sağa kaydır, marulu büyüt!</p>
+  <div class="answer">Marul önce <strong>tohum</strong> olarak başlar. Su aldığında <strong>çimlenir</strong>. Sonra kök, gövde ve yapraklar gelişir; küçük bitkiye <strong>fide</strong> denir. Fide büyüdükçe <strong>marul</strong> olur! 🥬</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru3')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 3: SERA -->
+<section class="page" id="page-soru3">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 3 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Sera, bitkilerin yetiştirilmesi için uygun koşulların daha kontrollü şekilde sağlanabildiği özel bir yetiştirme alanıdır. Seralarda bitkilerin ışık, su, sıcaklık ve hava gibi ihtiyaçları takip edilir.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🏡</span> Sera nedir?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 250" aria-label="Sera">
+      <circle cx="52" cy="46" r="26" fill="#FFD653" class="sera-el" id="el-sun"/>
+      <g class="sera-el" id="el-air">
+        <path d="M300 40 q14 -10 28 0 q14 10 28 0" stroke="#2BB6A3" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M310 58 q12 -8 24 0 q12 8 24 0" stroke="#2BB6A3" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </g>
+      <path d="M70 220 L70 120 L200 55 L330 120 L330 220 Z" fill="#D8F3FF" stroke="#4FB6E8" stroke-width="6" opacity=".92"/>
+      <line x1="200" y1="55" x2="200" y2="220" stroke="#4FB6E8" stroke-width="4"/>
+      <line x1="135" y1="88" x2="135" y2="220" stroke="#4FB6E8" stroke-width="3"/>
+      <line x1="265" y1="88" x2="265" y2="220" stroke="#4FB6E8" stroke-width="3"/>
+      <rect x="60" y="216" width="280" height="18" rx="9" fill="#8A5A3B"/>
+      <g>
+        <path d="M110 216 C110 204 108 196 110 188" stroke="#3FA34D" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="110" cy="184" r="12" fill="#6BC96F"/>
+        <path d="M170 216 C170 200 168 192 170 182" stroke="#3FA34D" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="170" cy="178" r="14" fill="#57B85F"/>
+        <path d="M235 216 C235 204 233 196 235 188" stroke="#3FA34D" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="235" cy="184" r="12" fill="#6BC96F"/>
+        <path d="M295 216 C295 202 293 194 295 184" stroke="#3FA34D" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="295" cy="180" r="13" fill="#57B85F"/>
+      </g>
+      <g class="sera-el" id="el-water">
+        <text x="150" y="120" font-size="22">💧</text><text x="245" y="140" font-size="18">💧</text>
+      </g>
+      <g class="sera-el" id="el-temp"><text x="82" y="150" font-size="26">🌡️</text></g>
+    </svg>
+  </div>
+  <div class="sera-btns">
+    <button class="sbtn sun" data-el="el-sun" data-msg="☀️ Işık: Bitkiler ışıkla besin üretir. Serada ışık takip edilir!">
+      <span class="i">☀️</span>Işık</button>
+    <button class="sbtn water" data-el="el-water" data-msg="💧 Su: Bitkilerin suyu düzenli verilir, kökler suyu emer!">
+      <span class="i">💧</span>Su</button>
+    <button class="sbtn temp" data-el="el-temp" data-msg="🌡️ Sıcaklık: Sera içi ne çok sıcak ne çok soğuk olur!">
+      <span class="i">🌡️</span>Sıcaklık</button>
+    <button class="sbtn air" data-el="el-air" data-msg="🌬️ Hava: Temiz hava bitkilerin sağlıklı büyümesini sağlar!">
+      <span class="i">🌬️</span>Hava</button>
+  </div>
+  <div class="bubble" id="seraBubble">👆 Butonlara dokun, seranın sırlarını keşfet!</div>
+  <div class="answer">🏡 Sera, bitkilerin yetiştirilmesi için uygun koşulların <strong>daha kontrollü</strong> sağlandığı özel bir yetiştirme alanıdır. Serada bitkilerin ışık, su, sıcaklık ve hava ihtiyaçları takip edilir.</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru4')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 4: IŞIK / BİTKİNİN MUTFAĞI -->
+<section class="page" id="page-soru4">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 4 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Bitkiler ışığı kullanarak kendi besinlerini üretir. Bitkilerin de kendi yiyeceklerini hazırladıkları bir mutfağı vardır. Bu mutfak yapraklarıdır. Yapraklar ışığı kullanarak bitkinin besin üretmesine yardımcı olur.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">☀️</span> Bitkiler neden ışığa ihtiyaç duyar?</h1>
+  <div class="stage" id="kitchen">
+    <svg viewBox="0 0 400 270" aria-label="Bitkinin mutfağı">
+      <circle cx="70" cy="55" r="30" fill="#FFD653" class="pulse"/>
+      <g class="ray" stroke="#FFC93E" stroke-width="7" stroke-linecap="round">
+        <line x1="98" y1="70" x2="160" y2="112"/>
+        <line x1="105" y1="50" x2="175" y2="85"/>
+        <line x1="90" y1="88" x2="148" y2="140"/>
+      </g>
+      <path d="M255 250 C255 210 250 185 255 158" stroke="#3FA34D" stroke-width="10" fill="none" stroke-linecap="round"/>
+      <path d="M255 200 C160 195 120 140 150 85 C240 90 270 150 255 200 Z" fill="#6BC96F" stroke="#3FA34D" stroke-width="5"/>
+      <path d="M255 196 C210 175 180 140 172 105" stroke="#3FA34D" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="translate(196,138)">
+        <rect x="-26" y="0" width="52" height="34" rx="8" fill="#5A3A22"/>
+        <rect x="-32" y="-6" width="64" height="10" rx="5" fill="#7A5233"/>
+        <ellipse cx="0" cy="0" rx="24" ry="5" fill="#3E2716"/>
+        <g class="steam" stroke="#FFFFFF" stroke-width="4" fill="none" stroke-linecap="round">
+          <path d="M-10 -12 q4 -8 0 -16"/><path d="M4 -14 q4 -8 0 -16"/>
+        </g>
+      </g>
+      <g class="food-star"><text x="285" y="120" font-size="26">⭐</text></g>
+      <g class="food-star"><text x="305" y="160" font-size="22">🍎</text></g>
+      <g class="food-star"><text x="290" y="200" font-size="24">✨</text></g>
+      <text x="200" y="262" text-anchor="middle" font-family="inherit" font-weight="600" font-size="14" fill="#5A6E5E">Yaprak = Bitkinin Mutfağı 👩‍🍳</text>
+    </svg>
+    <button class="btn-big" id="lightBtn">☀️ Işığı Aç!</button>
+  </div>
+  <div class="answer">☀️ Bitkiler ışığı kullanarak <strong>kendi besinlerini üretir</strong>. Bitkilerin mutfağı <strong>yapraklarıdır</strong> — yapraklar ışığı kullanarak besin hazırlar! Bu yüzden ışık, büyümeleri için çok önemlidir.</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru5')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 5: SU -->
+<section class="page" id="page-soru5">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 5 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Su, bitkinin yaşamını sürdürmesi ve büyümesi için gereklidir. Bitki suyu kökleri aracılığıyla alır ve bitkinin farklı bölümlerine taşır.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">💧</span> Bitkiler neden suya ihtiyaç duyar?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 300" aria-label="Suyun bitki içindeki yolculuğu">
+      <rect x="0" y="220" width="400" height="80" fill="#8A5A3B" rx="10"/>
+      <rect x="0" y="220" width="400" height="12" fill="#A9744F" rx="6"/>
+      <text x="70" y="212" font-size="30">🚿</text>
+      <g class="rootdrop"><text x="92" y="222" font-size="18">💧</text></g>
+      <g class="rootdrop r2"><text x="104" y="216" font-size="15">💧</text></g>
+      <g class="rootdrop r3"><text x="84" y="230" font-size="14">💧</text></g>
+      <g stroke="#E8D5B5" stroke-width="6" fill="none" stroke-linecap="round">
+        <path d="M200 232 C 180 250 160 258 138 264"/>
+        <path d="M200 232 C 220 250 240 258 262 264"/>
+        <path d="M200 236 C 196 258 192 272 190 284"/>
+      </g>
+      <path d="M200 232 C200 170 197 120 200 70" stroke="#3FA34D" stroke-width="12" fill="none" stroke-linecap="round"/>
+      <path d="M200 160 C 168 148 152 118 160 94 C 190 100 204 130 200 160 Z" fill="#6BC96F"/>
+      <path d="M200 130 C 232 118 248 88 240 64 C 210 70 196 100 200 130 Z" fill="#3FA34D"/>
+      <path d="M200 84 C 188 60 194 38 208 26 C 222 44 214 70 200 84 Z" fill="#57B85F"/>
+      <g class="drop"><circle cx="200" cy="225" r="8" fill="#4FB6E8"/></g>
+      <g class="drop d2"><circle cx="200" cy="225" r="7" fill="#7DCBEF"/></g>
+      <g class="drop d3"><circle cx="200" cy="225" r="6" fill="#4FB6E8"/></g>
+      <text x="285" y="250" font-family="inherit" font-weight="600" font-size="14" fill="#FFF3DE">Kökler suyu emer</text>
+      <text x="250" y="120" font-family="inherit" font-weight="600" font-size="14" fill="#2A7A39">Su yukarı taşınır ⬆</text>
+    </svg>
+  </div>
+  <p class="hint">💧 Damlaları izle: kökten yapraklara yolculuk!</p>
+  <div class="answer">💧 Su, bitkinin <strong>yaşaması ve büyümesi</strong> için gereklidir. Bitki suyu <strong>kökleriyle</strong> alır ve gövdesinden yapraklarına kadar <strong>her bölümüne taşır</strong>.</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru6')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 6: ÇİMLENME OYUNU -->
+<section class="page" id="page-soru6">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 6 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Tohumun çimlenebilmesi için temel olarak su ve uygun sıcaklık gerekir. Çimlenme sonrasında gelişen bitkinin sağlıklı büyümesi için ışık, su, hava ve uygun yetiştirme koşulları önemlidir.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🌱</span> Tohum çimlenmek için ne ister?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 220" id="gameSprout" aria-label="Çimlenme oyunu">
+      <rect x="0" y="160" width="400" height="60" fill="#8A5A3B" rx="10"/>
+      <rect x="0" y="160" width="400" height="12" fill="#A9744F" rx="6"/>
+      <g class="sprout-part">
+        <path d="M200 168 C200 140 198 122 200 100" stroke="#3FA34D" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M200 126 C 176 116 164 94 170 76 C 194 80 204 102 200 126 Z" fill="#6BC96F"/>
+        <path d="M200 114 C 224 104 236 82 230 64 C 206 68 196 90 200 114 Z" fill="#3FA34D"/>
+      </g>
+      <ellipse cx="200" cy="176" rx="24" ry="16" fill="#B8794A" stroke="#8A5A3B" stroke-width="3"/>
+      <text x="200" y="40" text-anchor="middle" font-size="17" font-family="inherit" font-weight="600" fill="#5A6E5E" id="gameTitle">Tohuma neler verelim? 🤔</text>
+    </svg>
+    <div class="needs">
+      <button class="nbtn water" id="needWater"><span class="check">✅</span><span class="i">💧</span>Su</button>
+      <button class="nbtn temp" id="needTemp"><span class="check">✅</span><span class="i">🌡️</span>Sıcaklık</button>
+      <button class="nbtn music" id="needMusic"><span class="i">🎵</span>Müzik</button>
+    </div>
+    <div class="gamemsg" id="gameMsg">👆 Tohumun ihtiyaçlarına dokun!</div>
+  </div>
+  <div class="answer">🌱 Tohumun çimlenmesi için <strong>su</strong> ve <strong>uygun sıcaklık</strong> gerekir. Çimlendikten sonra sağlıklı büyümek içinse <strong>ışık, su, hava</strong> ve uygun yetiştirme koşulları önemlidir.</div>
+  <div class="nextwrap"><button class="btn-next" onclick="go('soru7')">Sıradaki Soru ➜</button></div>
+</section>
+
+<!-- SORU 7: TOHUM vs FİDE -->
+<section class="page" id="page-soru7">
+  <div class="topbar">
+    <button class="btn-home" onclick="go('home')" aria-label="Ana sayfa">🏠</button>
+    <span class="chip">Soru 7 / 7</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Tohum, bitkinin başlangıç aşamasıdır. Fide ise tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🌿</span> Tohum ile fide arasındaki fark nedir?</h1>
+  <div class="stage">
+    <div class="duo">
+      <div class="duo-card seed" onclick="pickDuo(this,'🌰 Tohum: Bitkinin başlangıç aşamasıdır. İçinde minik bir bitki uyur!')">
+        <span class="art">🌰</span>
+        <h3>Tohum</h3>
+        <p>Bitkinin <b>başlangıcı</b>. Küçük ve sert; içinde bir bitki uyur! 😴</p>
+      </div>
+      <div class="duo-card fide" onclick="pickDuo(this,'🌿 Fide: Çimlenmeden sonra gelişmeye başlayan genç bitkidir. Kökü, gövdesi ve yaprakları vardır!')">
+        <span class="art">🌿</span>
+        <h3>Fide</h3>
+        <p>Çimlenmeden sonra büyüyen <b>genç bitki</b>. Yaprakları var! 🌱</p>
+      </div>
+    </div>
+    <div class="bubble" id="duoBubble">👆 Kartlara dokun, farkı keşfet!</div>
+  </div>
+  <div class="answer">🌱 <strong>Tohum:</strong> Bitkinin başlangıç aşamasıdır.<br>🌿 <strong>Fide:</strong> Tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.</div>
+  <div class="nextwrap">
+    <button class="btn-next" style="background:var(--purple);box-shadow:0 8px 0 #7E4FB4,var(--shadow)" onclick="go('home')">🏠 Ana Sayfa</button>
+    <button class="btn-next" onclick="celebrate('Hepsini öğrendin! 🥇')">🎉 Bitirdim!</button>
+  </div>
+</section>
+
+<div class="cheer" id="cheer">🎉 Aferin!</div>
+
+<script>
+/* ---------- Yönlendirme (hash routing) ---------- */
+const PAGES=['home','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
+function route(){
+  let h=(location.hash||'#home').replace('#','');
+  if(!PAGES.includes(h))h='home';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+h);
+  if(el)el.classList.add('active');
+  window.scrollTo(0,0);
+  stopSpeak();
+}
+function go(id){location.hash='#'+id;}
+window.addEventListener('hashchange',route);
+
+/* ---------- Sesli okuma ---------- */
+let currentBtn=null;
+function stopSpeak(){
+  try{speechSynthesis.cancel();}catch(e){}
+  if(currentBtn){currentBtn.classList.remove('speaking');currentBtn.innerHTML='🔊 Dinle';currentBtn=null;}
+}
+function pickTurkishVoice(){
+  const vs=speechSynthesis.getVoices();
+  return vs.find(v=>v.lang&&v.lang.toLowerCase().startsWith('tr'))||null;
+}
+document.querySelectorAll('.btn-speak').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn===currentBtn){stopSpeak();return;}
+    stopSpeak();
+    try{
+      const u=new SpeechSynthesisUtterance(btn.dataset.say);
+      u.lang='tr-TR';u.rate=0.92;u.pitch=1.1;
+      const v=pickTurkishVoice();if(v)u.voice=v;
+      u.onend=stopSpeak;u.onerror=stopSpeak;
+      window.__utter=u; /* iOS: sesin yarıda kesilmesini önler */
+      currentBtn=btn;btn.classList.add('speaking');btn.innerHTML='⏹️ Dur';
+      speechSynthesis.speak(u);
+    }catch(e){stopSpeak();}
+  });
+});
+try{speechSynthesis.onvoiceschanged=()=>{};}catch(e){}
+
+/* ---------- Konfeti + tebrik ---------- */
+const COLORS=['#3FA34D','#FFD653','#FF9F43','#4FB6E8','#F27DA6','#A46FD8'];
+function confetti(n=44){
+  for(let i=0;i<n;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    const s=8+Math.random()*10;
+    c.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s*0.6}px;
+      background:${COLORS[i%COLORS.length]};animation-duration:${1.6+Math.random()*1.6}s;
+      animation-delay:${Math.random()*0.5}s;`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4200);
+  }
+}
+function celebrate(msg='🎉 Aferin!'){
+  confetti();
+  const ch=document.getElementById('cheer');
+  ch.textContent=msg;
+  ch.classList.remove('show');void ch.offsetWidth;ch.classList.add('show');
+}
+
+/* ---------- S1: Tohum ---------- */
+const seedScene=document.getElementById('seedScene');
+document.getElementById('seedG').addEventListener('click',()=>{
+  if(seedScene.classList.contains('grown'))return;
+  seedScene.classList.add('grown');
+  document.getElementById('seedTxt').textContent='Filiz çıktı! 🌱';
+  document.getElementById('seedHint').textContent='🌱 Gördün mü? Tohumdan yeni bir bitki doğdu!';
+  celebrate('🌱 Harika!');
+});
+
+/* ---------- S2: Büyüme kaydırıcısı ---------- */
+const STAGES=['🌰 Tohum','🌱 Çimlenme','🌿 Fide','🥬 Gelişen Marul'];
+const slider=document.getElementById('growSlider');
+const imgs=document.querySelectorAll('.stageimg');
+const dots=document.querySelectorAll('#growDots span');
+let lastStage=-1,maxSeen=0;
+function setStage(v){
+  const st=Math.min(3,Math.floor(v/25.1));
+  if(st===lastStage)return;
+  lastStage=st;
+  imgs.forEach(im=>im.classList.toggle('on',+im.dataset.st===st));
+  dots.forEach((d,i)=>d.classList.toggle('on',i===st));
+  document.getElementById('growLabel').textContent=STAGES[st];
+  if(st===3&&maxSeen<3){celebrate('🥬 Marul büyüdü!');}
+  maxSeen=Math.max(maxSeen,st);
+}
+slider.addEventListener('input',e=>setStage(+e.target.value));
+setStage(0);
+
+/* ---------- S3: Sera ---------- */
+let seraSeen=new Set();
+document.querySelectorAll('.sbtn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.sbtn').forEach(x=>x.classList.remove('picked'));
+    document.querySelectorAll('.sera-el').forEach(x=>x.classList.remove('lit'));
+    b.classList.add('picked');
+    document.getElementById(b.dataset.el).classList.add('lit');
+    document.getElementById('seraBubble').textContent=b.dataset.msg;
+    seraSeen.add(b.dataset.el);
+    if(seraSeen.size===4)celebrate('🏡 Sera uzmanı oldun!');
+  });
+});
+
+/* ---------- S4: Mutfak ---------- */
+const kitchen=document.getElementById('kitchen');
+document.getElementById('lightBtn').addEventListener('click',function(){
+  const on=kitchen.classList.toggle('lit-on');
+  this.textContent=on?'🌙 Işığı Kapat':'☀️ Işığı Aç!';
+  if(on)celebrate('⭐ Besin pişiyor!');
+});
+
+/* ---------- S6: Çimlenme oyunu ---------- */
+const need={water:false,temp:false};
+function checkGame(){
+  if(need.water&&need.temp){
+    document.getElementById('gameSprout').classList.add('grown');
+    document.getElementById('gameMsg').textContent='🌱 Çimlendi! Su + sıcaklık = mutlu tohum!';
+    document.getElementById('gameTitle').textContent='Tohum çimlendi! 🎉';
+    celebrate('🌱 Çimlendi!');
+  }else{
+    document.getElementById('gameMsg').textContent=need.water
+      ?'💧 Su tamam! Şimdi sıcaklık lazım... 🌡️'
+      :'🌡️ Sıcaklık tamam! Şimdi su lazım... 💧';
+  }
+}
+document.getElementById('needWater').addEventListener('click',function(){
+  need.water=true;this.classList.add('done');checkGame();
+});
+document.getElementById('needTemp').addEventListener('click',function(){
+  need.temp=true;this.classList.add('done');checkGame();
+});
+document.getElementById('needMusic').addEventListener('click',function(){
+  this.classList.remove('wiggle');void this.offsetWidth;this.classList.add('wiggle');
+  document.getElementById('gameMsg').textContent='🎵 Hihi! Tohum müzik dinlemez, ona su ve sıcaklık lazım! 😄';
+});
+
+/* ---------- S7: Karşılaştırma ---------- */
+let duoSeen=new Set();
+function pickDuo(card,msg){
+  document.querySelectorAll('.duo-card').forEach(c=>c.classList.remove('picked'));
+  card.classList.add('picked');
+  document.getElementById('duoBubble').textContent=msg;
+  duoSeen.add(msg[0]);
+  if(duoSeen.size===2)setTimeout(()=>celebrate('🌿 Farkı öğrendin!'),400);
+}
+
+/* ---------- BAŞLAT (her şey tanımlandıktan sonra, en sonda!) ---------- */
+if(!('speechSynthesis' in window)){
+  document.querySelectorAll('.btn-speak').forEach(b=>{
+    b.disabled=true;b.innerHTML='🔇 Ses yok';b.style.opacity=.55;
+  });
+}
+route();
+</script>
+</body>
+</html>
