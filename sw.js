@@ -1,11 +1,10 @@
 /* Minik Çiftçiler – service worker: uygulama internetsiz de açılır.
    Sayfa: önce ağ (güncel içerik), ağ yoksa/yavaşsa önbellek.
    İkon/manifest: önbellekten anında, arkada güncellenir. */
-const CACHE = 'kucuk-ciftciler-v3';
+const CACHE = 'kucuk-ciftciler-v4';
 const SHELL = [
   './',
   './manifest.webmanifest',
-  './vendor/jsQR.min.js', /* QR okuyucu: standda internet olmasa da kamera ile okutulabilsin */
   './icons/icon.svg',
   './icons/favicon-32.png',
   './icons/apple-touch-icon.png',
