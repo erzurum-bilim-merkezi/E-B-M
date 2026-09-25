@@ -233,7 +233,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
   font-weight:700;font-size:1.05rem;}
 .scan-msg span.warn{background:#FFF1C2;color:#6B4A00;}
 .scan-msg:empty{display:none;}
-.scan-err{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+.scan-err{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:12px;overflow-y:auto;
   padding:24px 24px calc(110px + env(safe-area-inset-bottom,0px));text-align:center;background:#0E1A12;}
 .scan-err[hidden]{display:none;}
 .scan-err .ic{font-size:4rem;line-height:1;}
@@ -248,6 +248,14 @@ body[data-page="kasif"] .fab-qr{display:none;}
 .scan-btn[hidden]{display:none;}
 .scan-btn:focus-visible{outline:3px solid var(--yellow);outline-offset:3px;}
 .scan-err .scan-btn{background:var(--green);color:#fff;box-shadow:0 6px 0 var(--green-dark);}
+.scan-err>:first-child{margin-top:auto;}
+.scan-err>:last-child{margin-bottom:auto;}
+.scan-steps{max-width:440px;padding-left:1.5em;display:grid;gap:10px;text-align:left;font-size:1.05rem;font-weight:600;line-height:1.45;}
+.scan-steps b{color:var(--yellow);}
+.scan-steps[hidden],.scan-note[hidden]{display:none;}
+.scan-note{max-width:440px;font-size:.98rem;font-weight:600;line-height:1.45;color:#BFD8C6;}
+.scan-note.warn{color:#FFE08A;}
+.scan-err.nudge .ic{animation:wig .5s ease-in-out 2;}
 
 /* Ana sayfa */
 .hero{text-align:center;padding:10px 0 6px;}
@@ -1207,6 +1215,8 @@ body[data-page="kasif"] .fab-qr{display:none;}
     <span class="ic" id="scanErrIc" aria-hidden="true"></span>
     <h3 id="scanErrTitle"></h3>
     <p id="scanErrTxt"></p>
+    <ol class="scan-steps" id="scanErrSteps" hidden></ol>
+    <p class="scan-note" id="scanErrNote" hidden></p>
     <button class="scan-btn" id="scanRetry" type="button">🔄 Tekrar Dene</button>
   </div>
   <div class="scan-bottom">
@@ -2003,7 +2013,8 @@ async function makeDetector(){
   return jsqrDetector();
 }
 const CAM_HATA={
-  izin:['🙈','Kamera izni gerekiyor','Tarayıcı sorunca “İzin ver”e dokun. Daha önce reddettiysen tarayıcı ayarlarından bu site için kamerayı aç, sonra Tekrar Dene’ye dokun.'],
+  izin:['🙈','Kamera izni gerekiyor','Tekrar Dene’ye dokun. Tablet sorunca “İzin ver”i seç.'],
+  engelli:['📵','Kamera izni kapalı','Tablet bu izni artık sormuyor. Bir büyüğünden yardım iste, kamerayı şöyle açın:'],
   yok:['📷','Kamera bulunamadı','Bu cihazda kullanılabilir bir kamera yok. QR kodu kameralı bir telefon ya da tabletle okut.'],
   mesgul:['⏳','Kamera şu an meşgul','Kamera başka bir uygulamada açık olabilir. O uygulamayı kapatıp Tekrar Dene’ye dokun.'],
   guvensiz:['🔒','Kamera açılamıyor','Kamera yalnızca güvenli (https) bağlantıda çalışır. Uygulamayı resmi adresinden aç.'],
@@ -2025,15 +2036,60 @@ function scanMsg(msg,warn){
   s.textContent=msg;if(warn)s.className='warn';
   box.appendChild(s);
 }
+/* Kamera izni engelliyse tarayıcı izin penceresini bir daha AÇMAZ (hiçbir site açtıramaz): cihaza göre açma adımları */
+function izinAdimlari(){
+  const ua=navigator.userAgent,app=isInstalled(),host=location.hostname;
+  const ios=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(ios)return [
+    ...(app?[]:['Adres çubuğundaki <b>aA</b> düğmesine dokun → <b>Web Sitesi Ayarları</b> → <b>Kamera</b> → <b>İzin Ver</b>.']),
+    (app?'':'Orada yoksa: ')+'Tabletin <b>Ayarlar</b> uygulamasını aç → <b>Safari</b> → <b>Kamera</b> → <b>Sor</b> ya da <b>İzin Ver</b>.',
+    'Minik Çiftçiler’i kapatıp yeniden aç, QR butonuna dokun.'
+  ];
+  if(/Android/.test(ua)){
+    const tarayici=/SamsungBrowser/.test(ua)?'Samsung Internet':'Chrome';
+    return [
+      app?'Ana ekrandaki <b>Minik Çiftçiler</b> simgesine <b>basılı tut</b> → <b>ⓘ Uygulama bilgisi</b> → <b>İzinler</b> ya da <b>Site ayarları</b> → <b>Kamera</b> → <b>İzin ver</b>.'
+         :'Adres çubuğunun solundaki <b>🔒</b> simgesine dokun → <b>İzinler</b> → <b>Kamera</b>’yı aç.',
+      'Orada yoksa: <b>'+tarayici+'</b>’u aç → <b>⋮ Menü</b> → <b>Ayarlar</b> → <b>Site ayarları</b> → <b>Kamera</b> → <b>'+host+'</b> → <b>İzin ver</b>.',
+      'Hâlâ olmuyorsa: tabletin <b>Ayarlar</b> → <b>Uygulamalar</b> → <b>'+tarayici+'</b> → <b>İzinler</b> → <b>Kamera</b> → <b>İzin ver</b>.'
+    ];
+  }
+  return ['Adres çubuğundaki <b>🔒</b> simgesine tıkla → <b>Kamera</b> → <b>İzin ver</b>.','Sayfayı yenile ya da Tekrar Dene’ye tıkla.'];
+}
+let sonHata='',tekrarDenendi=false;
 function scanError(kind){
   stopCamera();
   const [ic,title,txt]=CAM_HATA[kind]||CAM_HATA.genel;
+  const hala=tekrarDenendi&&kind===sonHata; /* Tekrar Dene yine olmadı: aynı ekranı sessizce göstermeyelim */
+  tekrarDenendi=false;sonHata=kind;
   document.getElementById('scanErrIc').textContent=ic;
   document.getElementById('scanErrTitle').textContent=title;
   document.getElementById('scanErrTxt').textContent=txt;
+  const steps=document.getElementById('scanErrSteps'),note=document.getElementById('scanErrNote');
+  steps.hidden=kind!=='engelli';
+  steps.innerHTML=kind==='engelli'?izinAdimlari().map(t=>'<li>'+t+'</li>').join(''):''; /* sabit metinler, kullanıcı girdisi yok */
+  note.hidden=!(hala||kind==='engelli');
+  note.classList.toggle('warn',hala);
+  note.textContent=hala?'⚠️ Kamera hâlâ açılamadı. '+(kind==='engelli'?'Yukarıdaki adımları uygulayıp tekrar dene.':'Biraz bekleyip tekrar dene.')
+    :'İzni açıp buraya dönünce kamera kendiliğinden açılır. Tablet çocuk hesabıyla (Family Link) kullanılıyorsa izni ebeveyn ya da görevli açmalı.';
   scanMsg('');
-  document.getElementById('scanErr').hidden=false;
+  const box=document.getElementById('scanErr');
+  box.hidden=false;box.scrollTop=0;
+  if(hala)replay(box,'nudge');
   document.getElementById('scanRetry').focus();
+}
+/* İzin durumu (Permissions API; eski tarayıcılarda yok → ''). Ayarlardan izin verilince kamera kendiliğinden açılır. */
+let camPerm=null;
+async function kameraIzni(){
+  try{
+    if(!camPerm&&navigator.permissions&&navigator.permissions.query){
+      camPerm=await navigator.permissions.query({name:'camera'});
+      camPerm.addEventListener('change',()=>{
+        if(camPerm.state!=='denied'&&!kameraIsteniyor&&isDlgOpen(scanDlg)&&!document.hidden&&!document.getElementById('scanErr').hidden)startCamera();
+      });
+    }
+    return camPerm?camPerm.state:'';
+  }catch(e){return '';}
 }
 function stopTracks(s){try{s.getTracks().forEach(t=>t.stop());}catch(e){}}
 /* Kamerayı tamamen kapat: pil, ısınma, kamera ışığı. Bekleyen her şey (izin, döngü) scanSid ile iptal olur. */
@@ -2044,25 +2100,45 @@ function stopCamera(){
   try{scanVideo.pause();}catch(e){}
   scanVideo.srcObject=null;
   torchOn=false;scanTorch.hidden=true;scanTorch.classList.remove('on');scanTorch.setAttribute('aria-pressed','false');
+  retryHazir();
 }
+let kameraIsteniyor=false; /* izin penceresi açıkken ikinci istek gönderilmesin (pencereyi iptal edebilir) */
+const scanRetry=document.getElementById('scanRetry');
+function retryHazir(){scanRetry.disabled=false;scanRetry.textContent='🔄 Tekrar Dene';}
 async function startCamera(){
   stopCamera();
   const sid=scanSid;
-  document.getElementById('scanErr').hidden=true;
-  scanMsg('📷 Kamera açılıyor...');
+  /* Hata ekranı açıksa kamera gerçekten açılana kadar yerinde kalır: arkadaki çerçeve bir an görünüp kaybolmasın */
+  if(document.getElementById('scanErr').hidden)scanMsg('📷 Kamera açılıyor...');
+  else{scanRetry.disabled=true;scanRetry.textContent='⏳ Deneniyor...';}
   const md=navigator.mediaDevices;
   if(!md||!md.getUserMedia){scanError(window.isSecureContext===false?'guvensiz':'yok');return;}
   const detP=scanDetector?Promise.resolve(scanDetector):makeDetector();
   detP.catch(()=>{}); /* hata aşağıda ele alınır; "yakalanmamış hata" uyarısı çıkmasın */
   let stream;
+  kameraIsteniyor=true;
   try{
-    stream=await md.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
-  }catch(e){if(sid===scanSid)scanError(camErr(e));return;}
+    if(await kameraIzni()==='denied'){if(sid===scanSid)scanError('engelli');return;}
+    if(sid!==scanSid)return;
+    const t0=Date.now();
+    try{
+      stream=await md.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}}});
+    }catch(e){
+      if(sid!==scanSid)return;
+      let kind=camErr(e);
+      /* soru hiç çıkmadan anında red: izin tarayıcıda ya da tablet ayarlarında kapalı */
+      if(kind==='izin'&&(Date.now()-t0<400||await kameraIzni()==='denied'))kind='engelli';
+      if(sid===scanSid)scanError(kind);
+      return;
+    }
+  }finally{kameraIsteniyor=false;}
   if(sid!==scanSid){stopTracks(stream);return;} /* izin beklenirken pencere kapandı */
+  if(document.hidden){stopTracks(stream);return;} /* izin verilirken arka plana düştü: geri gelince yeniden açılır */
   try{scanDetector=await detP;}
   catch(e){stopTracks(stream);if(sid===scanSid)scanError('arac');return;}
   if(sid!==scanSid){stopTracks(stream);return;}
   scanStream=stream;
+  document.getElementById('scanErr').hidden=true; /* kamera açıldı: hata ekranı şimdi kalkar */
   const track=stream.getVideoTracks()[0];
   if(track)track.addEventListener('ended',()=>{if(sid===scanSid)scanError('mesgul');});
   scanVideo.srcObject=stream;
@@ -2132,7 +2208,7 @@ function closeScanner(){
 }
 scanDlg.addEventListener('close',()=>{stopCamera();stopSpeak();}); /* Esc / Android geri tuşu da buraya düşer */
 document.getElementById('scanClose').addEventListener('click',closeScanner);
-document.getElementById('scanRetry').addEventListener('click',startCamera);
+document.getElementById('scanRetry').addEventListener('click',()=>{tekrarDenendi=true;startCamera();});
 scanTorch.addEventListener('click',async()=>{
   const track=scanStream&&scanStream.getVideoTracks()[0];
   if(!track)return;
@@ -2144,7 +2220,7 @@ scanTorch.addEventListener('click',async()=>{
 });
 /* Uygulama arka plana geçince kamera kapanır, geri gelince (ör. ayarlardan izin verip dönünce) yeniden açılır */
 document.addEventListener('visibilitychange',()=>{
-  if(!isDlgOpen(scanDlg))return;
+  if(!isDlgOpen(scanDlg)||kameraIsteniyor)return; /* izin sorulurken dokunma: cevap gelince startCamera kendisi karar verir */
   if(document.hidden)stopCamera();else startCamera();
 });
 window.addEventListener('pagehide',closeScanner);
