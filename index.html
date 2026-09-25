@@ -107,7 +107,7 @@ h1.q-title{font-size:clamp(1.5rem,5.5vw,2.2rem);font-weight:700;line-height:1.2;
 /* Uygulama çubuğu: solda keşif sayfasına dönüş, sağ üstte kaşif */
 .appbar{display:flex;align-items:center;gap:10px;min-height:56px;margin-bottom:8px;}
 .btn-home[hidden],.me[hidden]{display:none;}
-body[data-page="kasif"] .appbar{display:none;}
+body[data-page="kasif"] .appbar,body[data-page="qr"] .appbar{display:none;}
 .me{display:flex;align-items:center;gap:10px;height:56px;padding:0 6px 0 18px;border:none;border-radius:999px;
   background:var(--card);box-shadow:var(--shadow);font-family:inherit;font-weight:700;font-size:1.1rem;
   color:var(--text);cursor:pointer;max-width:min(64vw,320px);transition:transform .12s;}
@@ -248,6 +248,15 @@ body[data-page="kasif"] .appbar{display:none;}
 .btn-install:active{transform:translateY(3px);box-shadow:0 3px 0 #CFE6D3,var(--shadow);}
 .btn-install img{width:30px;height:30px;border-radius:8px;}
 .btn-install[hidden]{display:none;}
+/* Görevli sayfası (?qr=1) */
+.qr-kart{width:100%;max-width:360px;margin:14px auto 0;}
+.qr-kart img{display:block;width:100%;height:auto;border-radius:22px;box-shadow:var(--shadow);}
+.qr-indir{display:grid;gap:14px;width:100%;max-width:360px;margin:22px auto 0;}
+.qr-indir a{display:flex;align-items:center;justify-content:center;flex:none;height:60px;text-decoration:none;}
+.btn-alt{border-radius:22px;background:var(--card);color:var(--green-dark);font-weight:700;font-size:1.1rem;
+  box-shadow:0 6px 0 #CFE6D3,var(--shadow);transition:transform .12s;}
+.btn-alt:active{transform:translateY(3px);box-shadow:0 3px 0 #CFE6D3,var(--shadow);}
+.qr-indir a:focus-visible{outline:3px solid var(--green-dark);outline-offset:3px;}
 .dlg{border:none;border-radius:28px;padding:22px 22px 18px;width:calc(100% - 32px);max-width:420px;
   margin:auto;color:var(--text);background:var(--card);box-shadow:var(--shadow);font-family:inherit;}
 .dlg::backdrop{background:rgba(43,58,46,.5);}
@@ -551,7 +560,6 @@ body[data-page="kasif"] .appbar{display:none;}
     <div class="sub">Soruları sırayla keşfet, hepsini bitir!</div>
     <div class="kesif-prog" id="kesifProg" hidden><span id="kesifProgTxt"></span><span class="bar" aria-hidden="true"><span id="kesifProgBar"></span></span></div>
     <div><button class="btn-next btn-devam" id="devamBtn" type="button" hidden></button></div>
-    <button class="btn-install" id="installBtn" type="button" hidden><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</button>
   </div>
   <div class="menu">
     <div class="mitem" data-q="1"><button class="mcard" type="button"><span class="ic">🌱</span><span class="tt">Tohum nedir?</span><span class="no">1</span></button></div>
@@ -1107,6 +1115,21 @@ body[data-page="kasif"] .appbar{display:none;}
   <div class="nextwrap"><button class="btn-next btn-ilerle" type="button">Sıradaki Soru ➡️</button></div>
 </section>
 
+<!-- GÖREVLİ SAYFASI (?qr=1): kitlere yapıştırılacak tek QR + uygulamayı yükle. Kaşif akışı burada yok. -->
+<section class="page" id="page-qr">
+  <div class="hero">
+    <div class="big">Minik Çiftçiler</div>
+    <div class="sub">Kitlere yapıştırılacak QR kodu</div>
+  </div>
+  <div class="qr-kart"><img src="qr/minik-ciftciler-qr.png" width="900" height="1110"
+    alt="Minik Çiftçiler QR kodu: https://erzurum-bilim-merkezi.github.io/E-B-M/"></div>
+  <div class="qr-indir">
+    <a class="btn-next" href="qr/minik-ciftciler-qr.png" download="minik-ciftciler-qr.png">⬇️ QR'ı İndir (PNG)</a>
+    <a class="btn-alt" href="qr/minik-ciftciler-qr.svg" download="minik-ciftciler-qr.svg">🖨️ Baskı için SVG</a>
+  </div>
+  <div class="hero"><button class="btn-install" id="installBtn" type="button" hidden><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</button></div>
+</section>
+
 <!-- FİNAL: bütün sorular bitti -->
 <section class="page" id="page-bitti">
   <div class="hero">
@@ -1257,10 +1280,12 @@ window.addEventListener('pageshow',e=>{if(e.persisted)syncState();});
    Adresler: #kasif (giriş) · #kesif (yol haritası) · #soru1…#soru12 (soru) · #bitti (final).
    Kitteki tek QR ana adresi açar: giriş yapılmamışsa giriş, yapılmışsa kaldığı soru. Sırası gelmemiş
    bir soruya (elle yazılan ya da basılı eski kartlardaki #soruN) gidilmez, sıradaki soru açılır.
-   Uygulamanın açtığı her geçmiş kaydı {kc:1} taşır; {up:1} = altında keşif sayfası var, geri tuşu oraya döner. */
+   Uygulamanın açtığı her geçmiş kaydı {kc:1} taşır; {up:1} = altında keşif sayfası var, geri tuşu oraya döner.
+   ?qr=1 = görevli sayfası: yalnızca QR indirme ve uygulamayı yükle; kaşif kaydına dokunulmaz. */
 const PAGES=['kasif','kesif','bitti',...SIRA.map(n=>'soru'+n)];
+const QR_SAYFASI=new URLSearchParams(location.search).has('qr');
 let currentPage=null,backPending=false;
-function hashUrl(p){return location.pathname+'#'+p;} /* eski ?qr=1 gibi parametreler adresten düşer */
+function hashUrl(p){return location.pathname+'#'+p;}
 function hashPage(){
   let h='';
   try{h=decodeURIComponent(location.hash.slice(1));}catch(e){}
@@ -1271,6 +1296,7 @@ function soruNo(p){const m=/^soru([1-9]\d?)$/.exec(p);return m?+m[1]:0;}
 function altSayfa(p){return !!soruNo(p)||p==='bitti';} /* keşif sayfasının üstüne açılan sayfalar */
 function route(){
   backPending=false;
+  if(QR_SAYFASI){show('qr');return;}
   const st=history.state,known=!!(st&&st.kc);
   let page=hashPage();
   const n=soruNo(page);
