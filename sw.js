@@ -1,4 +1,4 @@
-/* Küçük Çiftçiler – service worker: uygulama internetsiz de açılır.
+/* Minik Çiftçiler – service worker: uygulama internetsiz de açılır.
    Sayfa: önce ağ (güncel içerik), ağ yoksa/yavaşsa önbellek.
    İkon/manifest: önbellekten anında, arkada güncellenir. */
 const CACHE = 'kucuk-ciftciler-v3';

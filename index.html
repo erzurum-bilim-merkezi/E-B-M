@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Küçük Çiftçiler · Marul Serası Keşif Kiti</title>
-<meta name="description" content="Erzurum Bilim Merkezi · Marul serası keşif kiti: kartındaki QR kodu okut, dokun, keşfet, öğren!">
+<title>Minik Çiftçiler</title>
+<meta name="description" content="Erzurum Bilim Merkezi · Kartındaki QR kodu okut, öğrenmeye başla!">
 <meta name="theme-color" content="#BDE9FF">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -12,7 +12,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Küçük Çiftçiler">
+<meta name="apple-mobile-web-app-title" content="Minik Çiftçiler">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{
@@ -271,8 +271,12 @@ body[data-page="kasif"] .fab-qr{display:none;}
 .mitem:nth-child(4) .mcard .no{background:rgba(255,255,255,.5);}
 .mitem:nth-child(5) .mcard{background:linear-gradient(150deg,#54BEE8,#2A8FC4);}
 .mitem:nth-child(6) .mcard{background:linear-gradient(150deg,#B07BE0,#7E4FB4);}
-.mitem:nth-child(7) .mcard{background:linear-gradient(150deg,#F58BAF,#D95C86);}
-.mitem:nth-child(7){grid-column:1/-1;}
+.mitem:nth-child(7) .mcard{background:linear-gradient(150deg,#3CC7B4,#1F9A89);}
+.mitem:nth-child(8) .mcard{background:linear-gradient(150deg,#C08A5B,#8A5A3B);}
+.mitem:nth-child(9) .mcard{background:linear-gradient(150deg,#4CC38A,#23865A);}
+.mitem:nth-child(10) .mcard{background:linear-gradient(150deg,#FF8A7A,#E0584A);}
+.mitem:nth-child(11) .mcard{background:linear-gradient(150deg,#7C8CF0,#4F5FCC);}
+.mitem:nth-child(12) .mcard{background:linear-gradient(150deg,#F58BAF,#D95C86);}
 .foot{text-align:center;color:var(--text-soft);font-weight:500;font-size:.9rem;margin-top:18px;}
 
 /* QR yönetici modu (?qr=1) */
@@ -443,8 +447,113 @@ body[data-page="kasif"] .fab-qr{display:none;}
 .duo-card .art{font-size:3rem;display:inline-block;}
 .duo-card.picked .art{animation:sway 1s ease-in-out 2;}
 
-@media (min-width:560px){.menu{grid-template-columns:repeat(3,1fr);}
-  .mitem:nth-child(7){grid-column:2/3;}}
+/* Yeni sorular: ortak eylem butonları (buton sayısı kadar eşit sütun) */
+.acts{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:10px;margin-top:12px;}
+.nbtn.sun{background:var(--yellow);color:#6B4A00;}
+.nbtn.soil{background:var(--soil);}
+.nbtn.green{background:var(--green);}
+.nbtn.teal{background:var(--teal);}
+
+/* Tohum hemen büyür mü (#soru8): günler geçer */
+.t-part{opacity:0;transition:opacity .6s;}
+.t-part.on{opacity:1;}
+.t-grow{transform-box:fill-box;transform-origin:50% 100%;}
+.t-grow.on{animation:growup .8s ease-out;}
+.t-night{opacity:0;}
+#timeScene.passing .t-sky{animation:tsky 1.3s ease-in-out;}
+#timeScene.passing .t-sun{animation:tsun 1.3s ease-in-out;}
+#timeScene.passing .t-night{animation:tnight 1.3s ease-in-out;}
+@keyframes tsky{0%,100%{fill:#DDF3FF}50%{fill:#2F3C73}}
+@keyframes tsun{0%,100%{opacity:1}35%,65%{opacity:0}}
+@keyframes tnight{0%,100%{opacity:0}35%,65%{opacity:1}}
+.t-seed{transform-box:fill-box;transform-origin:50% 100%;}
+.t-seed.shake{animation:tshake .5s ease-in-out 2;}
+@keyframes tshake{0%,100%{transform:rotate(0)}25%{transform:rotate(-12deg)}75%{transform:rotate(12deg)}}
+.tneeds{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px;}
+.tneeds span{padding:5px 9px;border-radius:999px;background:#EEF3EF;color:#8A998D;font-weight:700;font-size:.88rem;white-space:nowrap;
+  transition:background .3s,color .3s,transform .3s;}
+.tneeds span.on{background:#E3F6E6;color:var(--green-dark);transform:scale(1.08);}
+
+/* Kökler (#soru9) */
+.k-root{fill:none;stroke:#F3E3C3;stroke-width:6;stroke-linecap:round;stroke-dasharray:160;stroke-dashoffset:160;
+  transition:stroke-dashoffset 1.4s ease-out;}
+#rootScene.xray .k-root{stroke-dashoffset:0;}
+.k-lbl{opacity:0;transition:opacity .6s .8s;}
+#rootScene.xray .k-lbl{opacity:1;}
+.k-plant{transform-box:fill-box;transform-origin:50% 100%;}
+#rootScene.wind .k-plant{animation:ksway .8s ease-in-out 3;}
+@keyframes ksway{0%,100%{transform:rotate(0)}25%{transform:rotate(-9deg)}75%{transform:rotate(9deg)}}
+.k-wind,.k-can,.k-fall,.k-up{opacity:0;}
+#rootScene.wind .k-wind{animation:kwind 1s linear 3;}
+@keyframes kwind{0%{transform:translateX(-50px);opacity:0}30%{opacity:1}100%{transform:translateX(110px);opacity:0}}
+#rootScene.water .k-can{animation:kcan 3.4s ease-in-out;}
+@keyframes kcan{0%,100%{opacity:0}10%,80%{opacity:1}}
+#rootScene.water .k-fall{animation:kfall .8s ease-in .2s 2;}
+@keyframes kfall{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(52px);opacity:0}}
+#rootScene.water .k-up{animation:kup 1.6s ease-in-out 1.2s 2;}
+@keyframes kup{0%{transform:translate(0,0);opacity:0}15%,80%{opacity:1}100%{transform:translate(var(--dx),var(--dy));opacity:0}}
+
+/* Yapraklar neden yeşil (#soru10) */
+#leafScene .y-leaf{cursor:pointer;}
+.y-lens{opacity:0;transform:scale(.3);transform-box:fill-box;transform-origin:50% 50%;
+  transition:opacity .4s,transform .5s cubic-bezier(.2,1.4,.4,1);}
+#leafScene.zoom .y-lens{opacity:1;transform:none;}
+.y-link{opacity:0;transition:opacity .4s;}
+#leafScene.zoom .y-link{opacity:1;}
+.y-chl{fill:#2FA84F;transform-box:fill-box;transform-origin:center;transition:fill .5s;}
+#leafScene.sunon .y-chl{fill:#5BE37D;animation:pulse 1s ease-in-out infinite;}
+.y-ray{opacity:0;transition:opacity .5s;}
+#leafScene.sunon .y-ray{opacity:1;animation:rays 1.4s ease-in-out infinite;}
+.y-star{opacity:0;transform:scale(0);transform-box:fill-box;transform-origin:center;}
+#leafScene.sunon .y-star{animation:star .8s cubic-bezier(.2,1.6,.4,1) .3s forwards;}
+#leafScene.sunon .y-star.s2{animation-delay:.6s;}
+#leafScene.sunon .y-star.s3{animation-delay:.9s;}
+
+/* Bitkilere kim bakar (#soru11) */
+.helpers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px;}
+.helper{background:#F2FBEF;border-radius:18px;padding:8px 4px;text-align:center;font-weight:700;font-size:.95rem;color:var(--green-dark);}
+.helper .i{display:block;font-size:2rem;line-height:1.25;}
+.b-leaf{transform-box:fill-box;fill:#BFCB8F;transition:transform .9s cubic-bezier(.2,1.4,.4,1),fill .9s;}
+.b-leaf.l{transform-origin:100% 100%;transform:rotate(-65deg);}
+.b-leaf.r{transform-origin:0% 100%;transform:rotate(65deg);}
+#careScene.h1 .b-leaf{fill:#A3C57E;}
+#careScene.h1 .b-leaf.l{transform:rotate(-40deg);}
+#careScene.h1 .b-leaf.r{transform:rotate(40deg);}
+#careScene.h2 .b-leaf.l,#careScene.h3 .b-leaf.l{fill:#6BC96F;}
+#careScene.h2 .b-leaf.r,#careScene.h3 .b-leaf.r,#careScene.h2 .b-leaf.t,#careScene.h3 .b-leaf.t{fill:#3FA34D;}
+#careScene.h2 .b-leaf.l{transform:rotate(-18deg);}
+#careScene.h2 .b-leaf.r{transform:rotate(18deg);}
+#careScene.h3 .b-leaf.l,#careScene.h3 .b-leaf.r{transform:none;}
+.b-mouth{opacity:0;transition:opacity .4s;}
+.b-mouth.on{opacity:1;}
+.b-sun{opacity:.22;transition:opacity .8s;}
+#careScene.sunon .b-sun{opacity:1;}
+.b-can,.b-drop,.b-hand{opacity:0;}
+#careScene.do-water .b-can{animation:kcan 2.2s ease-in-out;}
+#careScene.do-water .b-drop{animation:bdrop .7s ease-in .3s 3;}
+@keyframes bdrop{0%{transform:translate(0,0);opacity:0}20%{opacity:1}100%{transform:translate(26px,44px);opacity:0}}
+#careScene.do-soil .b-hand{animation:bhand 2s ease-in-out;}
+@keyframes bhand{0%,100%{transform:translateX(0);opacity:0}12%{opacity:1;transform:translateX(-20px)}
+  37%{transform:translateX(20px)}62%{transform:translateX(-20px)}85%{opacity:1;transform:translateX(12px)}}
+
+/* Marulu ne zaman yiyebiliriz (#soru12) */
+.h-lett{cursor:pointer;}
+.h-lett:focus{outline:none;}
+.h-lett:focus-visible .h-body{stroke:var(--green-dark);stroke-width:4;}
+.h-wig{transform-box:fill-box;transform-origin:50% 100%;}
+.h-body{transform-box:fill-box;transform-origin:50% 100%;transition:transform .8s cubic-bezier(.2,1.4,.4,1);}
+.h-lett[data-s="0"] .h-body{transform:scale(.4);}
+.h-lett[data-s="1"] .h-body{transform:scale(.7);}
+.h-lett.wig .h-wig{animation:wig .5s ease-in-out;}
+.h-lett.picked{pointer-events:none;}
+.h-lett.picked .h-wig{animation:hpick .8s ease-in forwards;}
+@keyframes hpick{to{transform:translate(var(--tx),-170px) scale(.2);opacity:0}}
+.h-ready{opacity:0;transition:opacity .4s;}
+.h-lett[data-s="2"]:not(.picked) .h-ready{opacity:1;}
+.h-bowl{transform-box:fill-box;transform-origin:center;}
+.h-bowl.pop{animation:pulse .4s ease-in-out 2;}
+
+@media (min-width:560px){.menu{grid-template-columns:repeat(3,1fr);}}
 </style>
 </head>
 <body>
@@ -496,8 +605,8 @@ body[data-page="kasif"] .fab-qr{display:none;}
   </div>
   <div class="hero">
     <span class="mascot">🥬</span>
-    <div class="big">Küçük Çiftçiler</div>
-    <div class="sub">Marul Serası Keşif Kiti · Kartındaki QR kodu okut, öğrenmeye başla!</div>
+    <div class="big">Minik Çiftçiler</div>
+    <div class="sub">Kartındaki QR kodu okut, öğrenmeye başla!</div>
     <div class="kesif-prog" id="kesifProg" hidden><span id="kesifProgTxt"></span><span class="bar" aria-hidden="true"><span id="kesifProgBar"></span></span></div>
     <button class="btn-install" id="installBtn" type="button" hidden><img src="icons/icon-192.png" alt="">Uygulamayı Yükle</button>
   </div>
@@ -508,7 +617,13 @@ body[data-page="kasif"] .fab-qr{display:none;}
     <div class="mitem" data-q="4"><button class="mcard" type="button"><span class="ic">☀️</span><span class="tt">Bitkiler neden ışığa ihtiyaç duyar?</span><span class="no">4</span></button></div>
     <div class="mitem" data-q="5"><button class="mcard" type="button"><span class="ic">💧</span><span class="tt">Bitkiler neden suya ihtiyaç duyar?</span><span class="no">5</span></button></div>
     <div class="mitem" data-q="6"><button class="mcard" type="button"><span class="ic">🌡️</span><span class="tt">Tohum çimlenmek için ne ister?</span><span class="no">6</span></button></div>
-    <div class="mitem" data-q="7"><button class="mcard" type="button"><span class="ic">🌿</span><span class="tt">Tohum ile fide arasındaki fark nedir?</span><span class="no">7</span></button></div>
+    <div class="mitem" data-q="8"><button class="mcard" type="button"><span class="ic">⏳</span><span class="tt">Bir tohum hemen bitki olur mu?</span><span class="no">7</span></button></div>
+    <div class="mitem" data-q="9"><button class="mcard" type="button"><span class="ic">🌳</span><span class="tt">Bitkinin kökü ne işe yarar?</span><span class="no">8</span></button></div>
+    <div class="mitem" data-q="10"><button class="mcard" type="button"><span class="ic">🍃</span><span class="tt">Yapraklar neden yeşildir?</span><span class="no">9</span></button></div>
+    <div class="mitem" data-q="11"><button class="mcard" type="button"><span class="ic">👩‍🌾</span><span class="tt">Bitkilere kim bakar?</span><span class="no">10</span></button></div>
+    <div class="mitem" data-q="12"><button class="mcard" type="button"><span class="ic">🥗</span><span class="tt">Marulu ne zaman yiyebiliriz?</span><span class="no">11</span></button></div>
+    <!-- Adresi #soru7 (basılı eski kartlar), sırada en son -->
+    <div class="mitem" data-q="7"><button class="mcard" type="button"><span class="ic">🌿</span><span class="tt">Tohum ile fide arasındaki fark nedir?</span><span class="no">12</span></button></div>
   </div>
   <div class="qr-bar">
     <span>🖨️ QR modu: kartın köşesindeki butonla o sorunun QR kodunu indir.</span>
@@ -521,7 +636,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 1: TOHUM -->
 <section class="page" id="page-soru1">
   <div class="topbar">
-    <span class="chip">Soru 1 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 1 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohum, yeni bir bitkinin başlangıcıdır. Uygun koşullar oluştuğunda tohum çimlenmeye başlar ve zamanla yeni bir bitkiye dönüşür.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">🌱</span> Tohum nedir?</h1>
@@ -561,7 +676,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 2: MARUL NASIL YETİŞİR -->
 <section class="page" id="page-soru2">
   <div class="topbar">
-    <span class="chip">Soru 2 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 2 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Marul önce tohum olarak başlar. Tohum uygun koşullarda su aldığında çimlenir. Daha sonra kök, gövde ve yapraklar gelişir. Küçük bitkiye fide denir. Fide büyüdükçe marul bitkisi gelişir.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">🥬</span> Marul nasıl yetişir?</h1>
@@ -617,7 +732,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 3: SERA -->
 <section class="page" id="page-soru3">
   <div class="topbar">
-    <span class="chip">Soru 3 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 3 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Sera, bitkilerin yetiştirilmesi için uygun koşulların daha kontrollü şekilde sağlanabildiği özel bir yetiştirme alanıdır. Seralarda bitkilerin ışık, su, sıcaklık ve hava gibi ihtiyaçları takip edilir.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">🏡</span> Sera nedir?</h1>
@@ -667,7 +782,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 4: IŞIK / BİTKİNİN MUTFAĞI -->
 <section class="page" id="page-soru4">
   <div class="topbar">
-    <span class="chip">Soru 4 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 4 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Bitkiler ışığı kullanarak kendi besinlerini üretir. Bitkilerin de kendi yiyeceklerini hazırladıkları bir mutfağı vardır. Bu mutfak yapraklarıdır. Yapraklar ışığı kullanarak bitkinin besin üretmesine yardımcı olur.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">☀️</span> Bitkiler neden ışığa ihtiyaç duyar?</h1>
@@ -704,7 +819,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 5: SU -->
 <section class="page" id="page-soru5">
   <div class="topbar">
-    <span class="chip">Soru 5 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 5 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Su, bitkinin yaşamını sürdürmesi ve büyümesi için gereklidir. Bitki suyu kökleri aracılığıyla alır ve bitkinin farklı bölümlerine taşır.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">💧</span> Bitkiler neden suya ihtiyaç duyar?</h1>
@@ -740,7 +855,7 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <!-- SORU 6: ÇİMLENME OYUNU -->
 <section class="page" id="page-soru6">
   <div class="topbar">
-    <span class="chip">Soru 6 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 6 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohumun çimlenebilmesi için temel olarak su ve uygun sıcaklık gerekir. Çimlenme sonrasında gelişen bitkinin sağlıklı büyümesi için ışık, su, hava ve uygun yetiştirme koşulları önemlidir.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">🌱</span> Tohum çimlenmek için ne ister?</h1>
@@ -767,10 +882,271 @@ body[data-page="kasif"] .fab-qr{display:none;}
   <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
 </section>
 
-<!-- SORU 7: TOHUM vs FİDE -->
+<!-- SORU 7 (adres #soru8): TOHUM HEMEN BİTKİ OLUR MU? -->
+<section class="page" id="page-soru8">
+  <div class="topbar">
+    <span class="chip">Soru 7 / 12</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Bir tohum hemen bitki olur mu? Hayır. Tohumun filizlenmesi ve büyümesi için zamana, suya, ışığa ve uygun sıcaklığa ihtiyacı vardır.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🌱</span> Bir tohum hemen bitki olur mu?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 260" id="timeScene" aria-label="Tohumun günler içinde büyümesi">
+      <rect class="t-sky" x="0" y="0" width="400" height="200" rx="16" fill="#DDF3FF"/>
+      <circle class="t-sun" cx="340" cy="52" r="26" fill="#FFD653"/>
+      <g class="t-night">
+        <text x="322" y="64" font-size="32">🌙</text>
+        <circle cx="120" cy="40" r="2.5" fill="#FFF7C2"/><circle cx="210" cy="26" r="2" fill="#FFF7C2"/>
+        <circle cx="262" cy="74" r="2.5" fill="#FFF7C2"/><circle cx="168" cy="86" r="2" fill="#FFF7C2"/>
+      </g>
+      <rect x="16" y="16" width="124" height="36" rx="18" fill="#FFFFFF"/>
+      <text id="dayTxt" x="78" y="40" text-anchor="middle" font-family="inherit" font-weight="700" font-size="16" fill="#2A7A39">📅 Gün 0</text>
+      <rect x="0" y="190" width="400" height="70" fill="#8A5A3B" rx="8"/>
+      <rect x="0" y="190" width="400" height="14" fill="#A9744F" rx="7"/>
+      <g class="t-part t-root" fill="none" stroke="#F3E3C3" stroke-width="4" stroke-linecap="round">
+        <path d="M200 218 C199 230 202 238 199 250"/><path d="M199 226 C192 232 186 236 180 244"/><path d="M200 228 C207 234 213 238 220 246"/>
+      </g>
+      <g class="t-part t-seed on">
+        <ellipse cx="200" cy="208" rx="24" ry="16" fill="#B8794A" stroke="#8A5A3B" stroke-width="3"/>
+      </g>
+      <g class="t-part t-crack" stroke="#6E4629" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M190 200 L197 208 L191 215"/><path d="M211 200 L205 208 L212 215"/>
+      </g>
+      <g class="t-part t-grow t-sprout">
+        <path d="M200 200 C200 190 199 184 200 176" stroke="#3FA34D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M200 182 C192 178 188 172 190 166 C197 168 200 174 200 182Z" fill="#6BC96F"/>
+        <path d="M200 180 C208 176 212 170 210 164 C203 166 200 172 200 180Z" fill="#3FA34D"/>
+      </g>
+      <g class="t-part t-grow t-stem">
+        <path d="M200 200 C200 170 198 150 200 128" stroke="#3FA34D" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M200 150 C178 140 166 118 172 100 C194 104 204 126 200 150Z" fill="#6BC96F"/>
+        <path d="M200 138 C222 128 234 106 228 88 C206 92 196 114 200 138Z" fill="#3FA34D"/>
+      </g>
+      <g class="t-part t-grow t-plant">
+        <ellipse cx="200" cy="160" rx="66" ry="44" fill="#3FA34D"/>
+        <ellipse cx="164" cy="150" rx="32" ry="40" fill="#57B85F"/>
+        <ellipse cx="236" cy="150" rx="32" ry="40" fill="#57B85F"/>
+        <ellipse cx="200" cy="140" rx="34" ry="44" fill="#6BC96F"/>
+        <ellipse cx="200" cy="152" rx="20" ry="28" fill="#8FDD8F"/>
+      </g>
+    </svg>
+    <div class="tneeds" id="timeNeeds"><span>💧 Su</span><span>🌡️ Sıcaklık</span><span>☀️ Işık</span><span>⏳ Zaman</span></div>
+    <div class="acts">
+      <button class="nbtn music" id="rushBtn" type="button"><span class="i">⚡</span>Hemen büyü!</button>
+      <button class="nbtn green" id="timeBtn" type="button"><span class="i">⏩</span>Zamanı ilerlet</button>
+    </div>
+    <div class="bubble" id="timeBubble">👆 Önce “Hemen büyü!” de, sonra zamanı ilerlet!</div>
+  </div>
+  <div class="answer">⏳ <strong>Hayır.</strong> Tohumun filizlenmesi ve büyümesi için <strong>zamana, suya, ışığa ve uygun sıcaklığa</strong> ihtiyacı vardır.</div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
+</section>
+
+<!-- SORU 8 (adres #soru9): KÖKLER -->
+<section class="page" id="page-soru9">
+  <div class="topbar">
+    <span class="chip">Soru 8 / 12</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Bitkinin kökü ne işe yarar? Kökler bitkiyi toprağa tutturur ve topraktan su ile bazı besinleri alır.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🌿</span> Bitkinin kökü ne işe yarar?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 290" id="rootScene" aria-label="Toprağın altındaki kökler">
+      <g class="k-wind" stroke="#8FD0EE" stroke-width="5" fill="none" stroke-linecap="round">
+        <path d="M30 62 q20 -10 40 0 t40 0"/><path d="M52 96 q20 -10 40 0 t40 0"/><path d="M24 128 q15 -8 30 0 t30 0"/>
+      </g>
+      <text class="k-can" x="262" y="84" font-size="36">🚿</text>
+      <g fill="#4FB6E8">
+        <circle class="k-fall" cx="272" cy="96" r="5"/><circle class="k-fall" cx="262" cy="104" r="4"/><circle class="k-fall" cx="282" cy="106" r="4"/>
+      </g>
+      <rect x="0" y="150" width="400" height="140" fill="#8A5A3B" rx="10"/>
+      <rect x="0" y="150" width="400" height="12" fill="#A9744F" rx="6"/>
+      <g fill="#6E4629"><circle cx="60" cy="200" r="6"/><circle cx="340" cy="250" r="7"/><circle cx="110" cy="265" r="5"/><circle cx="300" cy="185" r="4"/></g>
+      <g fill="#E3B04B" opacity=".75"><circle cx="150" cy="238" r="3"/><circle cx="252" cy="236" r="3"/><circle cx="178" cy="276" r="3"/><circle cx="226" cy="198" r="3"/></g>
+      <g>
+        <path class="k-root" d="M200 156 C198 190 204 220 200 262"/>
+        <path class="k-root" d="M200 172 C185 186 164 192 138 208"/>
+        <path class="k-root" d="M200 178 C216 192 240 198 266 212"/>
+        <path class="k-root" d="M199 205 C188 222 170 232 154 258"/>
+        <path class="k-root" d="M201 214 C212 230 230 238 246 264"/>
+      </g>
+      <text class="k-lbl" x="330" y="282" text-anchor="middle" font-family="inherit" font-weight="700" font-size="15" fill="#FFF3DE">⬅ Kökler</text>
+      <g class="k-plant">
+        <path d="M200 156 C200 125 197 100 200 76" stroke="#3FA34D" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <path d="M200 128 C176 118 162 96 168 76 C190 80 202 104 200 128Z" fill="#6BC96F"/>
+        <path d="M200 112 C224 102 236 80 230 60 C208 64 196 88 200 112Z" fill="#3FA34D"/>
+        <path d="M200 86 C190 66 196 46 208 36 C220 54 212 76 200 86Z" fill="#57B85F"/>
+      </g>
+      <g stroke="#FFFFFF" stroke-width="1.5">
+        <circle class="k-up" cx="200" cy="262" r="5" fill="#4FB6E8" style="--dx:0px;--dy:-146px"/>
+        <circle class="k-up" cx="138" cy="208" r="5" fill="#4FB6E8" style="--dx:62px;--dy:-92px"/>
+        <circle class="k-up" cx="266" cy="212" r="5" fill="#4FB6E8" style="--dx:-66px;--dy:-96px"/>
+        <circle class="k-up" cx="154" cy="258" r="5" fill="#4FB6E8" style="--dx:46px;--dy:-142px"/>
+        <circle class="k-up" cx="246" cy="264" r="5" fill="#4FB6E8" style="--dx:-46px;--dy:-148px"/>
+        <circle class="k-up" cx="150" cy="238" r="4" fill="#E3B04B" style="--dx:50px;--dy:-122px"/>
+        <circle class="k-up" cx="252" cy="236" r="4" fill="#E3B04B" style="--dx:-52px;--dy:-120px"/>
+      </g>
+    </svg>
+    <div class="acts">
+      <button class="nbtn soil" type="button" data-act="look" data-msg="🔍 İşte kökler! Toprağın altında her yöne yayılırlar."><span class="check">✅</span><span class="i">🔍</span>Toprağa bak</button>
+      <button class="nbtn teal" type="button" data-act="wind" data-msg="🌬️ Rüzgâr esti ama bitki devrilmedi! Kökler onu toprağa sıkıca tutturur. 💪"><span class="check">✅</span><span class="i">🌬️</span>Rüzgâr</button>
+      <button class="nbtn water" type="button" data-act="water" data-msg="💧 Kökler topraktan suyu ve besinleri emer, yukarı taşır!"><span class="check">✅</span><span class="i">💧</span>Su ver</button>
+    </div>
+    <div class="bubble" id="rootBubble">👆 Butonlara dokun, köklerin sırrını keşfet!</div>
+  </div>
+  <div class="answer">🌱 Kökler bitkiyi <strong>toprağa tutturur</strong> ve topraktan <strong>su ile bazı besinleri</strong> alır.</div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
+</section>
+
+<!-- SORU 9 (adres #soru10): YAPRAKLAR NEDEN YEŞİL -->
+<section class="page" id="page-soru10">
+  <div class="topbar">
+    <span class="chip">Soru 9 / 12</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Yapraklar neden yeşildir? Yapraklarda klorofil adı verilen yeşil bir madde bulunur. Bu madde bitkinin ışığı kullanmasına yardımcı olur.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🍃</span> Yapraklar neden yeşildir?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 260" id="leafScene" aria-label="Yaprağın içindeki klorofil">
+      <defs><clipPath id="lensClip"><circle cx="300" cy="128" r="74"/></clipPath></defs>
+      <circle cx="50" cy="45" r="24" fill="#FFD653" class="pulse"/>
+      <g class="y-ray" stroke="#FFC93E" stroke-width="6" stroke-linecap="round">
+        <line x1="76" y1="58" x2="118" y2="104"/><line x1="64" y1="72" x2="94" y2="130"/><line x1="82" y1="46" x2="140" y2="84"/>
+      </g>
+      <g class="y-leaf" id="leafShape">
+        <path d="M70 232 C66 244 60 250 52 254" stroke="#3FA34D" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <path d="M70 232 C60 160 100 100 190 80 C200 160 150 222 70 232Z" fill="#57B85F" stroke="#3FA34D" stroke-width="4"/>
+        <path d="M70 232 C110 190 150 130 190 80" stroke="#3FA34D" stroke-width="3" fill="none"/>
+        <g stroke="#3FA34D" stroke-width="2" fill="none"><path d="M102 196 L84 170"/><path d="M126 166 L106 140"/><path d="M150 134 L132 112"/><path d="M110 188 L142 190"/><path d="M136 154 L166 150"/></g>
+      </g>
+      <g class="y-link" stroke="#2A7A39" stroke-width="2" stroke-dasharray="5 5" fill="none">
+        <circle cx="140" cy="160" r="14"/><line x1="152" y1="152" x2="228" y2="100"/><line x1="154" y1="164" x2="232" y2="168"/>
+      </g>
+      <g class="y-lens">
+        <circle cx="300" cy="128" r="78" fill="#E9F9E4"/>
+        <g clip-path="url(#lensClip)" id="leafCells"></g>
+        <circle cx="300" cy="128" r="78" fill="none" stroke="#5A6E5E" stroke-width="8"/>
+        <line x1="356" y1="184" x2="382" y2="210" stroke="#5A6E5E" stroke-width="12" stroke-linecap="round"/>
+        <rect x="238" y="216" width="110" height="30" rx="15" fill="#2FA84F"/>
+        <circle cx="256" cy="231" r="7" fill="#7BEA92" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="302" y="237" text-anchor="middle" font-family="inherit" font-weight="700" font-size="15" fill="#FFFFFF">Klorofil</text>
+      </g>
+      <g class="y-star"><text x="40" y="150" font-size="22">✨</text></g>
+      <g class="y-star s2"><text x="108" y="64" font-size="22">⭐</text></g>
+      <g class="y-star s3"><text x="150" y="232" font-size="22">✨</text></g>
+    </svg>
+    <div class="acts">
+      <button class="nbtn green" type="button" data-act="zoom" data-msg="🔬 Yaprağın içinde minicik hücreler var. İçlerindeki yeşil taneler klorofil: yaprağı yeşil gösteren bu!"><span class="check">✅</span><span class="i">🔬</span>Yakından bak</button>
+      <button class="nbtn sun" type="button" data-act="sun" data-msg="☀️ Klorofil ışığı yakaladı! Bitki bu ışıkla kendi besinini yapıyor. ✨"><span class="check">✅</span><span class="i">☀️</span>Işık ver</button>
+    </div>
+    <div class="bubble" id="leafBubble">👆 Yaprağa dokun ya da butonları dene!</div>
+  </div>
+  <div class="answer">🍃 Yapraklarda <strong>klorofil</strong> adı verilen yeşil bir madde bulunur. Bu madde bitkinin <strong>ışığı kullanmasına</strong> yardımcı olur.</div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
+</section>
+
+<!-- SORU 10 (adres #soru11): BİTKİLERE KİM BAKAR -->
+<section class="page" id="page-soru11">
+  <div class="topbar">
+    <span class="chip">Soru 10 / 12</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Bitkilere kim bakar? Çiftçiler, bahçıvanlar ve bitki yetiştiren herkes onlara su verir, toprağını kontrol eder ve büyümelerine yardımcı olur.">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">👩‍🌾</span> Bitkilere kim bakar?</h1>
+  <div class="stage">
+    <div class="helpers">
+      <div class="helper"><span class="i">👩‍🌾</span>Çiftçi</div>
+      <div class="helper"><span class="i">👨‍🌾</span>Bahçıvan</div>
+      <div class="helper"><span class="i">🧒</span>Sen de!</div>
+    </div>
+    <svg viewBox="0 0 400 250" id="careScene" class="h0" aria-label="Bakım bekleyen saksıdaki bitki">
+      <g class="b-sun">
+        <circle cx="330" cy="52" r="24" fill="#FFD653"/>
+        <g class="spin-slow" stroke="#FFD653" stroke-width="5" stroke-linecap="round">
+          <line x1="330" y1="14" x2="330" y2="22"/><line x1="330" y1="82" x2="330" y2="90"/>
+          <line x1="292" y1="52" x2="300" y2="52"/><line x1="360" y1="52" x2="368" y2="52"/>
+        </g>
+      </g>
+      <text class="b-can" x="92" y="90" font-size="38">🚿</text>
+      <g fill="#4FB6E8"><circle class="b-drop" cx="136" cy="100" r="4.5"/><circle class="b-drop" cx="146" cy="94" r="4"/><circle class="b-drop" cx="128" cy="108" r="4"/></g>
+      <rect x="0" y="222" width="400" height="28" rx="10" fill="#CFE6D3"/>
+      <path d="M200 146 C200 125 199 108 200 92" stroke="#3FA34D" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path class="b-leaf l" d="M200 120 C182 116 166 102 164 86 C182 88 196 102 200 120Z"/>
+      <path class="b-leaf r" d="M200 110 C218 106 234 92 236 76 C218 78 204 92 200 110Z"/>
+      <path class="b-leaf t" d="M200 96 C194 84 196 72 204 64 C210 76 208 88 200 96Z"/>
+      <path d="M144 156 L256 156 L243 226 L157 226 Z" fill="#E07A4F"/>
+      <rect x="134" y="144" width="132" height="18" rx="7" fill="#C9653C"/>
+      <ellipse cx="200" cy="146" rx="58" ry="6" fill="#6E4629"/>
+      <text class="b-hand" x="182" y="150" font-size="28">🖐️</text>
+      <circle cx="182" cy="184" r="5" fill="#3E2716"/><circle cx="218" cy="184" r="5" fill="#3E2716"/>
+      <g stroke="#3E2716" stroke-width="4" fill="none" stroke-linecap="round">
+        <path class="b-mouth" data-h="0" d="M186 208 Q200 198 214 208"/>
+        <path class="b-mouth" data-h="1,2" d="M188 204 L212 204"/>
+        <path class="b-mouth" data-h="3" d="M186 200 Q200 216 214 200"/>
+      </g>
+      <g class="b-mouth" data-h="3" fill="#F7A6A0"><circle cx="170" cy="198" r="6"/><circle cx="230" cy="198" r="6"/></g>
+    </svg>
+    <div class="acts">
+      <button class="nbtn water" type="button" data-act="water" data-msg="💧 Su verdin! Bitkiler suyu kökleriyle içer."><span class="check">✅</span><span class="i">💧</span>Su ver</button>
+      <button class="nbtn soil" type="button" data-act="soil" data-msg="🖐️ Toprağı kontrol ettin: nemli ve yumuşak, tam kararında!"><span class="check">✅</span><span class="i">🖐️</span>Toprağı kontrol et</button>
+      <button class="nbtn sun" type="button" data-act="sun" data-msg="☀️ Bitkiyi güneşe koydun! Işık büyümesine yardım eder."><span class="check">✅</span><span class="i">☀️</span>Güneşe koy</button>
+    </div>
+    <div class="bubble" id="careBubble">😟 Bu bitki bakım bekliyor! Ona yardım eder misin?</div>
+  </div>
+  <div class="answer">👩‍🌾 <strong>Çiftçiler, bahçıvanlar</strong> ve bitki yetiştiren <strong>herkes</strong> onlara su verir, toprağını kontrol eder ve büyümelerine yardımcı olur. 🌱</div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
+</section>
+
+<!-- SORU 11 (adres #soru12): MARULU NE ZAMAN YİYEBİLİRİZ -->
+<section class="page" id="page-soru12">
+  <div class="topbar">
+    <span class="chip">Soru 11 / 12</span><span class="spacer"></span>
+    <button class="btn-speak" data-say="Marulu ne zaman yiyebiliriz? Marul yeterince büyüyüp yaprakları geliştiğinde toplanabilir ve afiyetle yenebilir!">🔊 Dinle</button>
+  </div>
+  <h1 class="q-title"><span class="q-emoji">🥬</span> Marulu ne zaman yiyebiliriz?</h1>
+  <div class="stage">
+    <svg viewBox="0 0 400 250" id="harvestScene" aria-label="Bahçede büyüklüğü farklı üç marul">
+      <g class="h-bowl" id="hBowl">
+        <rect x="16" y="14" width="104" height="46" rx="23" fill="#FFF6D6"/>
+        <text x="30" y="48" font-size="30">🥗</text>
+        <text id="hCount" x="94" y="45" text-anchor="middle" font-family="inherit" font-weight="700" font-size="22" fill="#6B4A00">0</text>
+      </g>
+      <rect x="0" y="205" width="400" height="45" fill="#8A5A3B" rx="10"/>
+      <rect x="0" y="205" width="400" height="12" fill="#A9744F" rx="6"/>
+      <g class="h-lett" data-s="0" data-x="80" transform="translate(80 210)" tabindex="0" role="button" aria-label="Bahçedeki marul">
+        <rect x="-56" y="-100" width="112" height="104" fill="transparent"/>
+        <g class="h-wig"><g class="h-body">
+          <ellipse cx="0" cy="-36" rx="50" ry="36" fill="#3FA34D"/>
+          <ellipse cx="-26" cy="-44" rx="24" ry="32" fill="#57B85F"/><ellipse cx="26" cy="-44" rx="24" ry="32" fill="#57B85F"/>
+          <ellipse cx="0" cy="-52" rx="26" ry="34" fill="#6BC96F"/><ellipse cx="0" cy="-44" rx="15" ry="20" fill="#8FDD8F"/>
+        </g></g>
+        <text class="h-ready" x="28" y="-86" font-size="22">✨</text>
+      </g>
+      <g class="h-lett" data-s="1" data-x="200" transform="translate(200 210)" tabindex="0" role="button" aria-label="Bahçedeki marul">
+        <rect x="-56" y="-100" width="112" height="104" fill="transparent"/>
+        <g class="h-wig"><g class="h-body">
+          <ellipse cx="0" cy="-36" rx="50" ry="36" fill="#3FA34D"/>
+          <ellipse cx="-26" cy="-44" rx="24" ry="32" fill="#57B85F"/><ellipse cx="26" cy="-44" rx="24" ry="32" fill="#57B85F"/>
+          <ellipse cx="0" cy="-52" rx="26" ry="34" fill="#6BC96F"/><ellipse cx="0" cy="-44" rx="15" ry="20" fill="#8FDD8F"/>
+        </g></g>
+        <text class="h-ready" x="28" y="-86" font-size="22">✨</text>
+      </g>
+      <g class="h-lett" data-s="2" data-x="320" transform="translate(320 210)" tabindex="0" role="button" aria-label="Bahçedeki marul">
+        <rect x="-56" y="-100" width="112" height="104" fill="transparent"/>
+        <g class="h-wig"><g class="h-body">
+          <ellipse cx="0" cy="-36" rx="50" ry="36" fill="#3FA34D"/>
+          <ellipse cx="-26" cy="-44" rx="24" ry="32" fill="#57B85F"/><ellipse cx="26" cy="-44" rx="24" ry="32" fill="#57B85F"/>
+          <ellipse cx="0" cy="-52" rx="26" ry="34" fill="#6BC96F"/><ellipse cx="0" cy="-44" rx="15" ry="20" fill="#8FDD8F"/>
+        </g></g>
+        <text class="h-ready" x="28" y="-86" font-size="22">✨</text>
+      </g>
+    </svg>
+    <div class="acts"><button class="nbtn green" id="hTime" type="button"><span class="i">⏳</span>Zaman geçsin</button></div>
+    <div class="bubble" id="hBubble">👆 Hangi marul yenmeye hazır? Dokun ve bul!</div>
+  </div>
+  <div class="answer">😋 Marul <strong>yeterince büyüyüp yaprakları geliştiğinde</strong> toplanabilir ve afiyetle yenebilir! 🥬</div>
+  <div class="nextwrap"><button class="btn-next" type="button" onclick="go('kesif')">🔍 Keşfe Devam Et</button></div>
+</section>
+
+<!-- SORU 12 (adres #soru7, basılı eski kartlar): TOHUM vs FİDE -->
 <section class="page" id="page-soru7">
   <div class="topbar">
-    <span class="chip">Soru 7 / 7</span><span class="spacer"></span>
+    <span class="chip">Soru 12 / 12</span><span class="spacer"></span>
     <button class="btn-speak" data-say="Tohum, bitkinin başlangıç aşamasıdır. Fide ise tohumun çimlenmesinden sonra gelişmeye başlayan genç bitkidir.">🔊 Dinle</button>
   </div>
   <h1 class="q-title"><span class="q-emoji">🌿</span> Tohum ile fide arasındaki fark nedir?</h1>
@@ -870,7 +1246,10 @@ body[data-page="kasif"] .fab-qr{display:none;}
 <script>
 /* ---------- Kaşif kaydı (yalnızca bu cihazda, localStorage) ---------- */
 const STORE_KEY='kucuk-ciftciler.v3';
-const SORU_SAYISI=7;
+const SORU_SAYISI=12;
+/* Görünen sıra = keşif sayfasındaki kart sırası. Adres numarası (#soruN) sabit kalır: basılı eski kartlar bozulmasın */
+const SIRA=[...document.querySelectorAll('.mitem')].map(e=>+e.dataset.q);
+function sira(n){return SIRA.indexOf(+n)+1;}
 const YAS_MIN=3,YAS_MAX=15,YAS_VARSAYILAN=7;
 const AVATAR={kiz:'👧',erkek:'👦'};
 /* Görevli modu (?qr=1): QR kartı indirme + bütün sorular açık, kaşif kaydına dokunulmaz */
@@ -899,7 +1278,7 @@ function cleanState(raw){
   }
   if(raw.kesif&&typeof raw.kesif==='object')
     for(let n=1;n<=SORU_SAYISI;n++)if(raw.kesif[n])s.kesif[n]=+raw.kesif[n]||Date.now();
-  s.finalKutlandi=!!raw.finalKutlandi;
+  s.finalKutlandi=!!raw.finalKutlandi&&Object.keys(s.kesif).length>=SORU_SAYISI; /* yeni soru eklenince final yeniden kutlanır */
   return s;
 }
 function loadState(){
@@ -944,10 +1323,10 @@ window.addEventListener('storage',e=>{if(e.key===STORE_KEY||e.key===null)syncSta
 window.addEventListener('pageshow',e=>{if(e.persisted)syncState();});
 
 /* ---------- Yönlendirme ----------
-   Adresler: #kasif (giriş) · #kesif (soru kartları) · #soru1…#soru7 (detay). Basılı QR'lar {URL}#soruN açar.
+   Adresler: #kasif (giriş) · #kesif (soru kartları) · #soru1…#soru12 (detay). Basılı QR'lar {URL}#soruN açar.
    Uygulamanın kendi açtığı her geçmiş kaydı {kc:1} ile işaretlenir. İşaretsiz bir #soruN = kart QR'ı
    telefonun kamerasıyla okutuldu → keşif sayılır. Geri/ileri ile eski kayda dönmek kilit açmaz. */
-const PAGES=['kasif','kesif','soru1','soru2','soru3','soru4','soru5','soru6','soru7'];
+const PAGES=['kasif','kesif',...SIRA.map(n=>'soru'+n)];
 let currentPage=null,pendingQ=0,backPending=false;
 function hashUrl(p){return location.pathname+location.search+'#'+p;}
 function hashPage(){
@@ -956,7 +1335,7 @@ function hashPage(){
   if(h==='home')h='kesif'; /* v2 adresi */
   return PAGES.includes(h)?h:'kesif';
 }
-function soruNo(p){const m=/^soru(\d)$/.exec(p);return m?+m[1]:0;}
+function soruNo(p){const m=/^soru([1-9]\d?)$/.exec(p);return m?+m[1]:0;}
 function route(){
   backPending=false;
   const st=history.state,known=!!(st&&st.kc);
@@ -1059,7 +1438,7 @@ function setFieldErr(field,errId,bad){
 function prepKasifForm(){
   const note=document.getElementById('pendingNote');
   note.hidden=!pendingQ;
-  if(pendingQ)note.textContent=`🌟 ${pendingQ}. soruyu keşfettin! Önce kendini tanıt, sonra hemen ona gidiyoruz.`;
+  if(pendingQ)note.textContent=`🌟 ${sira(pendingQ)}. soruyu keşfettin! Önce kendini tanıt, sonra hemen ona gidiyoruz.`;
   setYas(yasInput.value);
 }
 adInput.addEventListener('input',()=>{if(harfSayisi(cleanName(adInput.value))>=2)setFieldErr(adInput,'adErr',false);});
@@ -1169,7 +1548,7 @@ function renderKesif(){
     const n=+item.dataset.q,open=isOpen(n);
     item.classList.toggle('locked',!open);
     item.querySelector('.mcard').setAttribute('aria-label',
-      `Soru ${n}: ${qrTitle(n)}`+(open?'':'. Kilitli: açmak için kartın QR kodunu okut'));
+      `Soru ${sira(n)}: ${qrTitle(n)}`+(open?'':'. Kilitli: açmak için kartın QR kodunu okut'));
   });
   const prog=document.getElementById('kesifProg');
   prog.hidden=ADMIN||!state.kasif||c>=SORU_SAYISI; /* hepsi bitince görünüm sade: sadece açık kartlar */
@@ -1323,6 +1702,147 @@ function pickDuo(card,msg){
   if(duoSeen.size===2)setTimeout(()=>celebrate('🌿 Farkı öğrendin!'),400);
 }
 
+/* ---------- Ortak: SVG animasyonunu baştan oynat (SVG'de offsetWidth yok) ---------- */
+function replay(el,cls){el.classList.remove(cls);void el.getBoundingClientRect();el.classList.add(cls);}
+
+/* ---------- Soru 7 (#soru8): Tohum hemen bitki olur mu? ---------- */
+const timeScene=document.getElementById('timeScene'),timeBtn=document.getElementById('timeBtn');
+const ZAMAN=[
+  {gun:'📅 Gün 0',on:['t-seed']},
+  {gun:'📅 3. gün',on:['t-seed','t-crack','t-root'],msg:'💧 3. gün: Tohum su aldı, kabuğu çatladı. Minik bir kök çıktı!'},
+  {gun:'📅 7. gün',on:['t-seed','t-crack','t-root','t-sprout'],msg:'🌡️ 7. gün: Toprak ılık. Filiz yavaşça başını uzattı!'},
+  {gun:'📅 14. gün',on:['t-seed','t-crack','t-root','t-stem'],msg:'☀️ 14. gün: Işık aldı, yapraklar açıldı!'},
+  {gun:'📅 40. gün',on:['t-root','t-plant'],msg:'⏳ 40. gün: Tohum sonunda bitki oldu! Büyümek zaman ister. 🌱'}
+];
+const ZAMAN_SON=ZAMAN.length-1;
+let zamanAdim=0;
+function setZaman(i){
+  zamanAdim=i;
+  const z=ZAMAN[i];
+  timeScene.querySelectorAll('.t-part').forEach(p=>p.classList.toggle('on',z.on.some(c=>p.classList.contains(c))));
+  document.getElementById('dayTxt').textContent=z.gun;
+  document.querySelectorAll('#timeNeeds span').forEach((n,k)=>n.classList.toggle('on',k<i)); /* su → sıcaklık → ışık → zaman */
+  timeBtn.innerHTML=i===ZAMAN_SON?'<span class="i">🔄</span>Baştan başla':'<span class="i">⏩</span>Zamanı ilerlet';
+}
+timeBtn.addEventListener('click',()=>{
+  const bubble=document.getElementById('timeBubble');
+  if(zamanAdim===ZAMAN_SON){setZaman(0);bubble.textContent='🌰 Yeni bir tohum ektik. Zamanı yeniden ilerlet!';return;}
+  replay(timeScene,'passing');
+  setZaman(zamanAdim+1);
+  bubble.textContent=ZAMAN[zamanAdim].msg;
+  if(zamanAdim===ZAMAN_SON)celebrate('🌱 Sabırla büyüdü!');
+});
+document.getElementById('rushBtn').addEventListener('click',function(){
+  this.classList.remove('wiggle');void this.offsetWidth;this.classList.add('wiggle');
+  if(zamanAdim===ZAMAN_SON){
+    document.getElementById('timeBubble').textContent='🥬 Bu marul zaten büyüdü! Ama bunun için günlerce beklemek gerekti. ⏳';
+    return;
+  }
+  replay(timeScene.querySelector('.t-seed'),'shake');
+  document.getElementById('timeBubble').textContent='⚡ Hmm... Hiçbir şey olmadı! Tohum hemen bitki olmaz, zamana ihtiyacı var. ⏳';
+});
+
+/* ---------- Soru 8 (#soru9): Kökler ---------- */
+const rootScene=document.getElementById('rootScene'),rootSeen=new Set();
+document.querySelectorAll('#page-soru9 .nbtn').forEach(b=>b.addEventListener('click',()=>{
+  const a=b.dataset.act;
+  if(a!=='wind')rootScene.classList.add('xray'); /* su yolunu görmek için kökler de açılır */
+  if(a!=='look')replay(rootScene,a);
+  b.classList.add('done');
+  document.getElementById('rootBubble').textContent=b.dataset.msg;
+  rootSeen.add(a);
+  if(rootSeen.size===3&&!rootScene.dataset.done){rootScene.dataset.done='1';setTimeout(()=>celebrate('🌿 Kök uzmanı oldun!'),700);}
+}));
+
+/* ---------- Soru 9 (#soru10): Yapraklar neden yeşil ---------- */
+const leafScene=document.getElementById('leafScene'),leafSeen=new Set();
+(function(){ /* büyüteçteki hücreler ve klorofil taneleri (her açılışta aynı desen) */
+  const NS='http://www.w3.org/2000/svg',g=document.getElementById('leafCells');
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+  let r=7;const rnd=()=>(r=(r*9301+49297)%233280)/233280;
+  for(let y=50,row=0;y<206;y+=28,row++)for(let x=218-(row%2)*18;x<380;x+=36){
+    g.appendChild(el('rect',{x,y,width:34,height:26,rx:8,fill:'#D6F2CE',stroke:'#9BD58F','stroke-width':2}));
+    for(let k=0;k<4;k++){
+      const c=el('ellipse',{class:'y-chl',cx:(x+7+rnd()*20).toFixed(1),cy:(y+6+rnd()*14).toFixed(1),rx:4.2,ry:2.8});
+      c.style.animationDelay=(rnd()*.8).toFixed(2)+'s';
+      g.appendChild(c);
+    }
+  }
+})();
+function leafAct(a){
+  leafScene.classList.add('zoom'); /* ışıkta parlayan klorofil görünsün */
+  if(a==='sun')leafScene.classList.add('sunon');
+  const b=document.querySelector('#page-soru10 .nbtn[data-act="'+a+'"]');
+  b.classList.add('done');
+  document.getElementById('leafBubble').textContent=b.dataset.msg;
+  leafSeen.add(a);
+  if(leafSeen.size===2&&!leafScene.dataset.done){leafScene.dataset.done='1';setTimeout(()=>celebrate('🍃 Klorofil kaşifi oldun!'),700);}
+}
+document.querySelectorAll('#page-soru10 .nbtn').forEach(b=>b.addEventListener('click',()=>leafAct(b.dataset.act)));
+document.getElementById('leafShape').addEventListener('click',()=>leafAct('zoom'));
+
+/* ---------- Soru 10 (#soru11): Bitkilere kim bakar ---------- */
+const careScene=document.getElementById('careScene'),careDone=new Set();
+function careLevel(){
+  const h=careDone.size;
+  careScene.classList.remove('h0','h1','h2','h3');careScene.classList.add('h'+h);
+  careScene.querySelectorAll('.b-mouth').forEach(m=>m.classList.toggle('on',m.dataset.h.split(',').includes(String(h))));
+}
+document.querySelectorAll('#page-soru11 .nbtn').forEach(b=>b.addEventListener('click',()=>{
+  const a=b.dataset.act;
+  if(a==='sun')careScene.classList.add('sunon');else replay(careScene,'do-'+a);
+  b.classList.add('done');careDone.add(a);careLevel();
+  const bitti=careDone.size===3;
+  document.getElementById('careBubble').textContent=bitti
+    ?'😊 Su, toprak ve ışık: bitki çok mutlu! Çiftçiler ve bahçıvanlar da bitkilere her gün böyle bakar.'
+    :b.dataset.msg;
+  if(bitti&&!careScene.dataset.done){careScene.dataset.done='1';setTimeout(()=>celebrate('👩‍🌾 Harika bir bahçıvansın!'),700);}
+}));
+careLevel();
+
+/* ---------- Soru 11 (#soru12): Marulu ne zaman yiyebiliriz ---------- */
+const hTime=document.getElementById('hTime'),letts=[...document.querySelectorAll('#harvestScene .h-lett')];
+const KASE_X=68; /* toplanan marul kaseye uçar */
+let hasat=0;
+function hMsg(t){document.getElementById('hBubble').textContent=t;}
+letts.forEach(l=>{
+  l.style.setProperty('--tx',(KASE_X-+l.dataset.x)+'px');
+  const topla=()=>{
+    if(l.classList.contains('picked'))return;
+    const s=+l.dataset.s;
+    if(s<2){
+      replay(l,'wig');
+      hMsg(s===0?'🌱 Bu marul daha çok küçük! Biraz daha büyüsün.':'🥬 Neredeyse hazır... Yaprakları biraz daha gelişsin!');
+      return;
+    }
+    l.classList.add('picked');hasat++;
+    document.getElementById('hCount').textContent=hasat;
+    replay(document.getElementById('hBowl'),'pop');
+    if(hasat===letts.length){
+      hMsg('🥗 Bütün marullar toplandı. Salata hazır, afiyet olsun!');
+      hTime.innerHTML='<span class="i">🌱</span>Yeniden ek';
+      celebrate('🥗 Salata hazır!');
+    }else{
+      hMsg('😋 Yaprakları gelişmiş, tam zamanı! Afiyet olsun!');
+      if(hasat===1)celebrate('😋 Afiyet olsun!');
+    }
+  };
+  l.addEventListener('click',topla);
+  l.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();topla();}});
+});
+hTime.addEventListener('click',()=>{
+  if(hasat===letts.length){
+    letts.forEach((l,i)=>{l.classList.remove('picked');l.dataset.s=i;});
+    hasat=0;document.getElementById('hCount').textContent=0;
+    hTime.innerHTML='<span class="i">⏳</span>Zaman geçsin';
+    hMsg('🌱 Yeni marullar ektik! Hangisi yenmeye hazır?');
+    return;
+  }
+  let buyudu=false;
+  letts.forEach(l=>{if(!l.classList.contains('picked')&&+l.dataset.s<2){l.dataset.s=+l.dataset.s+1;buyudu=true;}});
+  hMsg(buyudu?'⏳ Günler geçti, marullar büyüdü! Hangisi hazır?':'✨ Parlayan marullar yenmeye hazır. Onlara dokun!');
+});
+
 /* ---------- QR kodları (yönetici modu: adrese ?qr=1 eklenince görünür) ---------- */
 /* Basılı kartlar bu adrese gider: sayfa nereden açılırsa açılsın QR hep canlı siteyi gösterir. */
 const PUBLIC_URL='https://erzurum-bilim-merkezi.github.io/E-B-M/';
@@ -1357,7 +1877,7 @@ function slug(s){
   return s.toLocaleLowerCase('tr').replace(/[çğıöşü]/g,c=>tr[c])
     .normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
 }
-function qrFileName(n){return `soru-${n}-${slug(qrTitle(n))}.png`;}
+function qrFileName(n){return `soru-${String(sira(n)).padStart(2,'0')}-${slug(qrTitle(n))}.png`;}
 function wrapText(ctx,text,max){
   const lines=[];let line='';
   text.split(/\s+/).forEach(w=>{
@@ -1382,7 +1902,7 @@ async function makeQrBlob(n){
   const font=px=>`700 ${px}px "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif`;
   const top=off+cell*count+QUIET*cell;
   ctx.textAlign='center';ctx.textBaseline='top';
-  ctx.fillStyle='#2A7A39';ctx.font=font(46);ctx.fillText('Soru '+n,W/2,top);
+  ctx.fillStyle='#2A7A39';ctx.font=font(46);ctx.fillText('Soru '+sira(n),W/2,top);
   let px=58,lines;
   do{ctx.font=font(px);lines=wrapText(ctx,qrTitle(n),W-80);}while(lines.length>2&&(px-=4)>30);
   ctx.fillStyle='#1F2A22';
@@ -1415,13 +1935,13 @@ function initQrMode(){
   document.body.classList.add('qr-mode');
   const items=[...document.querySelectorAll('.mitem')];
   items.forEach(item=>{
-    const n=item.dataset.q,b=document.createElement('button');
+    const n=item.dataset.q,no=sira(n),b=document.createElement('button');
     b.type='button';b.className='qr-btn';b.innerHTML=QR_ICON;
-    b.title=`Soru ${n} QR kodunu indir`;b.setAttribute('aria-label',b.title);
+    b.title=`Soru ${no} QR kodunu indir`;b.setAttribute('aria-label',b.title);
     b.addEventListener('click',()=>withBusy(b,async()=>{
-      setQrStatus(`⏳ Soru ${n} QR kodu hazırlanıyor...`);
+      setQrStatus(`⏳ Soru ${no} QR kodu hazırlanıyor...`);
       saveBlob(await makeQrBlob(n),qrFileName(n));
-      setQrStatus(`✅ Soru ${n} QR kodu indirildi.`);
+      setQrStatus(`✅ Soru ${no} QR kodu indirildi.`);
     }));
     item.appendChild(b);
   });
@@ -1431,7 +1951,7 @@ function initQrMode(){
     const JSZip=await loadLib('jszip');
     const zip=new JSZip();
     for(const item of items)zip.file(qrFileName(item.dataset.q),await makeQrBlob(item.dataset.q));
-    saveBlob(await zip.generateAsync({type:'blob'}),'kucuk-ciftciler-qr-kodlari.zip');
+    saveBlob(await zip.generateAsync({type:'blob'}),'minik-ciftciler-qr-kodlari.zip');
     setQrStatus(`✅ ${items.length} QR kodu ZIP olarak indirildi.`);
   }));
 }
@@ -1447,8 +1967,8 @@ const QR_KAYNAKLARI=[
 function qrSoru(text){
   let u;
   try{u=new URL(String(text).trim());}catch(e){return 0;}
-  const m=/^#soru([1-7])$/i.exec(u.hash);
-  if(!m||!/^https?:$/.test(u.protocol))return 0;
+  const m=/^#soru([1-9]\d?)$/i.exec(u.hash);
+  if(!m||!/^https?:$/.test(u.protocol)||!SIRA.includes(+m[1]))return 0;
   const host=u.hostname.toLowerCase();
   const self=u.origin===location.origin&&u.pathname.startsWith(new URL('./',location.href).pathname);
   return self||QR_KAYNAKLARI.some(k=>k.host===host&&k.path.test(u.pathname))?+m[1]:0;
@@ -1589,7 +2109,7 @@ function scanResult(text){
   const yeni=discover(n);
   go('soru'+n);
   if(yeni)celebrate('🌟 Yeni keşif!');
-  if(hedef&&hedef!==n)toast(`📇 Bu, ${n}. sorunun kartıymış!`);
+  if(hedef&&hedef!==n)toast(`📇 Bu, ${sira(n)}. sorunun kartıymış!`);
   return true;
 }
 function openScanner(target){
@@ -1599,7 +2119,7 @@ function openScanner(target){
   t.hidden=!scanTarget;
   if(scanTarget){
     const ic=document.querySelector(`.mitem[data-q="${scanTarget}"] .ic`).textContent;
-    t.textContent=`${ic} Soru ${scanTarget}: ${qrTitle(scanTarget)}`;
+    t.textContent=`${ic} Soru ${sira(scanTarget)}: ${qrTitle(scanTarget)}`;
   }
   scanBad='';scanMsg('');
   document.getElementById('scanErr').hidden=true;
@@ -1680,6 +2200,11 @@ if(!('speechSynthesis' in window)){
     b.disabled=true;b.innerHTML='🔇 Ses yok';b.style.opacity=.55;
   });
 }
+/* kart ve soru sayfası numaraları menü sırasından: sıra değişirse tek yerden değişir */
+SIRA.forEach((n,i)=>{
+  document.querySelector(`.mitem[data-q="${n}"] .no`).textContent=i+1;
+  document.querySelector(`#page-soru${n} .chip`).textContent=`Soru ${i+1} / ${SORU_SAYISI}`;
+});
 if('scrollRestoration' in history)history.scrollRestoration='manual'; /* her sayfa en üstten açılır */
 initQrMode();
 initInstall();

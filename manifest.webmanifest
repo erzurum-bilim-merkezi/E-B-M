@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Küçük Çiftçiler · Marul Serası Keşif Kiti",
-  "short_name": "Küçük Çiftçiler",
-  "description": "Erzurum Bilim Merkezi · Marul serası keşif kiti: kartındaki QR kodu okut, dokun, keşfet, öğren!",
+  "name": "Minik Çiftçiler",
+  "short_name": "Minik Çiftçiler",
+  "description": "Erzurum Bilim Merkezi · Kartındaki QR kodu okut, öğrenmeye başla!",
   "lang": "tr",
   "dir": "ltr",
   "start_url": "./",
