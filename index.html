@@ -305,7 +305,11 @@ body[data-page="kasif"] .appbar,body[data-page="qr"] .appbar{display:none;}
 .stageimg{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transform:scale(.85);
   transition:opacity .35s,transform .35s;}
 .stageimg.on{opacity:1;transform:scale(1);}
-.slider{width:100%;height:22px;appearance:none;-webkit-appearance:none;background:transparent;margin:8px 0 2px;}
+/* SVG kutuya sığsın: tablette genişlikten büyüyüp kaydırıcının üstünü (görünmez de olsa) kapatmasın */
+.stageimg{pointer-events:none;}
+.stageimg svg{height:100%;}
+/* dokunma alanı 40px başparmağın tamamı kadar; eksi kenar boşlukları yerleşimi eskisiyle aynı tutar */
+.slider{display:block;width:100%;height:44px;appearance:none;-webkit-appearance:none;background:transparent;margin:-3px 0 -6px;}
 .slider::-webkit-slider-runnable-track{height:16px;border-radius:999px;
   background:linear-gradient(90deg,var(--soil),var(--leaf),var(--green));}
 .slider::-webkit-slider-thumb{-webkit-appearance:none;width:40px;height:40px;border-radius:50%;
@@ -315,7 +319,7 @@ body[data-page="kasif"] .appbar,body[data-page="qr"] .appbar{display:none;}
 .slider::-moz-range-thumb{width:40px;height:40px;border-radius:50%;background:#fff;
   border:5px solid var(--green);box-shadow:var(--shadow);cursor:pointer;}
 .stagelabel{text-align:center;font-weight:700;font-size:1.25rem;color:var(--green-dark);min-height:1.6em;}
-.stagedots{display:flex;justify-content:space-between;padding:0 8px;font-size:1.3rem;}
+.stagedots{display:flex;justify-content:space-between;padding:0 8px;font-size:1.3rem;pointer-events:none;}
 .stagedots span{opacity:.35;transition:opacity .3s,transform .3s;}
 .stagedots span.on{opacity:1;transform:scale(1.25);}
 
